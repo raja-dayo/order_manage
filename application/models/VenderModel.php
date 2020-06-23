@@ -16,14 +16,22 @@
 			return $result->result_array();
 		}
 
-		public function agentModel()
+		/*public function agentModel()
 		{
 			$this->db->where("status",'1');
 			
 			$result=$this->db->get("agents");
 			
 			return $result->result_array();
+		}*/
+
+		public function get_agent_model($vender_id)
+		{
+			$result=$this->db->query("select * from agents, states, country where agents.a_state_id=states.state_id AND agents.a_country_id=country.country_id AND agents.status=1 AND agents.vendor_id='".$vender_id."'  order By agents.a_id DESC");
+			
+			return $result->result_array();
 		}
+
 
 		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $card_type, $card_number, $cvv_number, $card_ex_date)
 		{
@@ -288,7 +296,7 @@
 			return $result->result_array();
 		}
 
-			public function inProcess_orders_model($vender_id)
+		public function inProcess_orders_model($vender_id)
 		{
 			$result=$this->db->query("SELECT * FROM users, orders, customers, products 
 				WHERE orders.vender_id=users.id 
@@ -301,6 +309,27 @@
 			);
 
 			return $result->result_array();
+		}
+
+		public function add_agent_model($vender_id, $name, $lname, $number, $agent_per, $country_id, $state_id)
+		{
+	
+
+			$data=array(
+
+				"a_first_name"	   		=>$name,
+				"a_last_name"	  	 	=>$lname,
+				"a_percentage"			=>$agent_per,
+				"a_contact_number"	   	=>$number,
+				"a_country_id"	   		=>$country_id,
+				"a_state_id"	   		=>$state_id,
+				"create_on"				=>time(),
+				"vendor_id"				=>$vender_id
+			);
+
+			$result=$this->db->insert("agents", $data);
+			
+			return $result;	
 		}
 	}
 ?>

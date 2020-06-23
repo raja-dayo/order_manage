@@ -43,9 +43,9 @@
 				<div class="elisyam-bg background-01">
 					<div class="elisyam-overlay overlay-01"></div>
 					<div class="authentication-col-content mx-auto">
-						<h1 class="gradient-text-01">Welcome To Elisyam!</h1>
+						<h1 class="gradient-text-01">Welcome To Order Management!</h1>
 						<span class="description">
-							Etiam consequat urna at magna bibendum, in tempor arcu fermentum vitae mi massa egestas.
+							
 						</span>
 					</div>
 				</div>
@@ -53,12 +53,11 @@
 			<div class="col-xl-4 col-lg-6 col-md-7 my-auto no-padding">
 				<div class="authentication-form mx-auto">
 					<div class="logo-centered">
-						<a href="db-default.html">
-							<img src="<?php echo base_url()."assets/img/logo.png"?>" alt="logo">
-						</a>
+						
+						<img src="<?php echo base_url()."assets/img/logo.png"?>" alt="logo">
 					</div>
 					
-					<h3>Sign In To Elisyam</h3>
+					<h3>Sign In To OMS</h3>
 					<?php
 						if($this->session->flashdata('msg'))
 						{
@@ -89,17 +88,13 @@
 								</div>
 							</div>
 							<div class="col text-right">
-								<a href="pages-forgot-password.html">Forgot Password ?</a>
+								<a href="<?php echo site_url('login/forgot_password');?>">Forgot Password ?</a>
 							</div>
 						</div>
 						<div class="sign-btn text-center">
 							<input type="submit" name="login" class="btn btn-lg btn-gradient-01" value="Sign in">
 						</div>
-						<div class="register">
-							Don't have an account?
-							<br>
-							<a href="pages-register.html">Create an account</a>
-						</div>
+						
 					</form>
 				</div>
 			</div>

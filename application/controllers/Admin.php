@@ -39,12 +39,7 @@
 			$data['agents']=$this->admin->count_agent_model();
 
 			$data['refund_orders']=$this->admin->count_refund_orders_model();
-			
-			//$data['venders']=$venders;
-
-			//echo "<pre>";
-			//print_r($data['refund_orders']);
-			//die;
+		
 			$this->load->view("admin/dashboard", $data);
 		}
 
@@ -84,16 +79,10 @@
 
 		public function update_profile()
 		{
-			//echo "<pre>";
-			//print_r($_REQUEST);
-			//extract($_REQUEST);
-			//print_r($_FILES);
-			
-			//die;
 			$password = urldecode($this->encrypt->encode($_REQUEST['password']));
-			//echo $password;
-			//die;
+			
 			extract($_REQUEST);
+			
 			if($_FILES['image']['name']=="")
 			{
 			
@@ -124,14 +113,15 @@
 
             	if ($this->upload->do_upload("image"))
 	            {
-	            	$password = urldecode($this->encrypt->encode($_REQUEST['password']));
+	            	$pass = urldecode($this->encrypt->encode($_REQUEST['password']));
+                	
                 	extract($_REQUEST);
 
 	                $data = array('upload_data' => $this->upload->data());
 
 	                $file_name= $data['upload_data']['file_name'];
 
-	                $flag=$this->admin->updateAdminProfileModel($_SESSION['data']['admin']['id'], $firstname, $lastname, $password, $number, $file_name, $address);
+	                $flag=$this->admin->updateAdminProfileModel($_SESSION['data']['admin']['id'], $firstname, $lastname, $pass, $number, $file_name, $address);
 	                $_SESSION['data']['admin']['image']=$file_name;
 	            	
 	            	if($flag)
@@ -162,7 +152,6 @@
 		public function addVender()
 		{
 			extract($_REQUEST);
-			//die;
 
 			$encrypt_pass = urldecode($this->encrypt->encode($name));
 
@@ -171,11 +160,14 @@
 			if($flag)
 			{
 				$this->session->set_flashdata("msg", "A new Vendor Add Successfully");
+				
 				return redirect("admin/vendorForm");
 			}
 			else
-			{
-				echo "no";
+			{	
+				$this->session->set_flashdata("msg", "Vendor Not added something wrong");
+				
+				return redirect("admin/vendorForm");
 			}
 		}
 
@@ -265,7 +257,7 @@
 			$this->load->view("admin/manage_stock",$data);
 		}
 
-			public function stock_list()
+		public function stock_list()
 		{
 			$data['stock_list']=$this->admin->stock_list_model();
 
@@ -286,11 +278,12 @@
 		public function edit_stock()
 		{
 			extract($_REQUEST);
+			
 			$data['products']=$this->admin->productsModel();
+			
 			$data['stock']=$this->admin->stock_edit_prodcut_model($stock_id);
 			
-			$this->load->view("admin/edit_stock",$data);
-			
+			$this->load->view("admin/edit_stock",$data);	
 		}
 
 		public function update_stock()
@@ -301,10 +294,6 @@
 			}
 			else
 			{
-				//echo "<pre>";
-				//print_r($_REQUEST);
-
-				//o;
 				$result=$this->admin->update_stock_model($_REQUEST['stock_id'], $_REQUEST['quantity']);
 				
 				if($result)
@@ -326,22 +315,14 @@
 
 		public function order_view()
 		{
-			//echo $_POST['order_id'];
-			
 			$data['order']=$this->admin->orderViewModel($_POST['order_id']);
 			
-			//echo "<pre>";
-			//print_r($data);
-
 			$this->load->view("admin/orderView",$data);
 		}
 
 		public function deliver_orders()
 		{
 			$data['records']=$this->admin->deliverOrdersModel();
-			//echo "<pre>";
-
-			//print_r($data);
 			
 			$this->load->view("admin/deliver_orders",$data);
 		}
@@ -727,6 +708,31 @@
 				
 				$this->load->view("admin/editVender",$data);
 			}
+			else if(isset($_POST['active']))
+			{
+				$vender_id= $_POST['active'];
+
+				$result=$this->admin->acitve_verdor_status($vender_id);
+				
+				if($result)
+				{
+					return redirect("admin/vendor");
+				}
+			}
+
+			else if(isset($_POST['inactive']))
+			{
+				//echo $_POST['inactive'];
+				
+				$vender_id= $_POST['inactive'];
+
+				$result=$this->admin->inacitve_verdor_status($vender_id);
+				
+				if($result)
+				{
+					return redirect("admin/vendor");
+				}
+			}
 			else
 			{
 				echo $_REQUEST['delete'];
@@ -755,8 +761,8 @@
 
 		public function updateOrder()
 		{
-			echo "<pre>";
-			print_r($_REQUEST);
+			//echo "<pre>";
+			//print_r($_REQUEST);
 			//o_quantity
 			//die;
 			//echo $_POST['orderId'];
@@ -820,7 +826,16 @@
 			
 			if(isset($_REQUEST['delete']))
 			{
-				echo "delete";
+				//echo $_REQUEST['delete'];
+				//die;
+				$result=$this->admin->delete_agent_model($_REQUEST['delete']);
+
+				if($result)
+				{
+					$this->session->set_flashdata("msg","Agent Delete Successfully");
+
+					return redirect("admin/agent_list");
+				}
 			}
 			else
 			{	

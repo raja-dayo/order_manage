@@ -33,7 +33,7 @@
 			
 			$data['result']=$result;
 			
-			$this->load->view("Vender/dashboard", $data);
+			$this->load->view("vender/dashboard", $data);
 		}
 
 		public function profile()
@@ -116,7 +116,7 @@
 		{	
 			$result=$this->AdminVender->productsModel();
 
-			$data['agents']=$this->Vender->agentModel();
+			$data['agents']=$this->Vender->get_agent_model($_SESSION['data']['vender']['id']);
 			
 			$data['products']=$result;
 
@@ -481,6 +481,44 @@
 			$data["inProcess_orders"]=$this->Vender->inProcess_orders_model($_SESSION['data']['vender']['id']);
 			
 			$this->load->view("vender/in_process_orders",$data);
+		}
+
+		public function agentForm()
+		{
+			$data['countries']=$this->Vender->getCountry();
+			
+			$this->load->view("vender/agent_form",$data);
+		}
+
+		public function add_agent()
+		{
+			//echo "<pre>";
+			//print_r($_REQUEST);
+			extract($_REQUEST);
+
+			$vender_id=$_SESSION['data']['vender']['id'];
+			
+			$result=$this->Vender->add_agent_model($vender_id, $name, $lname, $number, $agent_per, $country_id, $state_id);
+
+			if($result)
+			{
+				$this->session->set_flashdata("msg", "Agent Add Successfully");
+
+				return redirect("vender/agentform");
+			}
+		}
+
+		public function agentList()
+		{
+			$data['records']=$this->Vender->get_agent_model($_SESSION['data']['vender']['id']);
+
+
+			$this->load->view("vender/agent_list",$data);
+		}
+
+		public function agents_action()
+		{
+			echo "under process";
 		}
 	}
 ?>

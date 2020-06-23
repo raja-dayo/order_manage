@@ -37,7 +37,7 @@
             <h4>Add Product Form</h4>
           </div>
           <div class="widget-body">
-            <?php  echo form_open_multipart("admin/updateProduct", 'class="form"'); ?>
+            <?php  echo form_open_multipart("deo/updateProduct", 'class="form"'); ?>
               <div class="form-group row d-flex align-items-center mb-5">
                 <label class="col-lg-3 form-control-label">Product Name</label>
                 <div class="col-lg-9">

@@ -73,6 +73,34 @@
 			return $result->result_array();
 		}
 
+		public function acitve_verdor_status($id)
+		{
+			$data=array(
+
+				"status"   =>1
+			);
+
+			$this->db->where("id",$id);
+
+			$result=$this->db->update("users",$data);
+			
+			return $result;
+		}
+
+		public function inacitve_verdor_status($id)
+		{
+			$data=array(
+
+				"status"   =>0
+			);
+
+			$this->db->where("id",$id);
+
+			$result=$this->db->update("users",$data);
+			
+			return $result;
+		}
+
 		public function orderList()
 		{
 			$result=$this->db->query("select * from users, orders, customers, products where orders.vender_id=users.id AND orders.customer_id=customers.customer_id AND orders.product_id=products.id  AND orders.deleted='no' order By order_id DESC");
@@ -408,7 +436,7 @@
 
 		public function agent_list_model()
 		{
-			$result=$this->db->query("select * from agents, states, country where agents.a_state_id=states.state_id AND agents.a_country_id=country.country_id order By agents.a_id DESC");
+			$result=$this->db->query("select * from agents, states, country where agents.a_state_id=states.state_id AND agents.a_country_id=country.country_id AND agents.status=1  order By agents.a_id DESC");
 			
 			return $result->result_array();
 		}
@@ -420,6 +448,19 @@
 			return $result->result_array();
 		}
 
+		public function delete_agent_model($id)
+		{
+			$data=array(
+				"status"		=>0,
+			);
+
+			$this->db->where("a_id",$id);
+
+			$result=$this->db->update("agents",$data);
+			
+			return $result;
+		}
+		
 		public function edit_agent_model($edit_id)
 		{
 			$result=$this->db->query("select * from agents where a_id='".$edit_id."'");

@@ -52,32 +52,35 @@
             <tbody>
               
               <?php 
-                foreach ($records as $key => $vender) {
-                  
+                foreach ($records as $key => $vender) 
+                {  
                   ?>
                     <tr>
                       <td><?php echo ucwords($vender['name']." ".$vender['last_name']); ?></td>
                       <td><span class="text-primary"><?php echo $vender['email']; ?></span></td>
                       <td><?php echo $vender['phone_number']; ?></td>
                       <td><?php echo ucwords($vender['country_name']); ?></td>
-                      <td><span style="width:100px;">
-                        <?php 
-                          if($vender['status']==1)
-                          {
-                            //echo "Pending";
+                      <td>
+                        <form method="post" action="<?php echo site_url('admin/venders_action');?>">
+                          <span style="width:100px;">
+                            <?php 
+                              if($vender['status']==1)
+                              {
+                                ?>
+                                  <button type="submit" class="btn btn-gradient-02" name="inactive" value="<?php echo $vender['id'];?>">Inactive</button>
+                                <?php
+                              }
+                              else
+                              {
+                                ?>
+                                  <button type="submit" style="width: 88px;" class="btn btn-gradient-01" name="active" value="<?php echo $vender['id'];?>">Active</button>
+                                <?php
+                              }
                             ?>
-                              <span class="badge-text badge-text-small info"><?php echo "Active"; ?></span>
-                            <?php
-                          }
-                          else
-                          {
-                            ?>
-                              <span class="badge-text badge-text-small danger"><?php echo "Inactive"; ?></span>
-                            <?php
-                          }
-                        ?></span></span></td>
-          
-                       <td class="td-actions">
+                          </span>  
+                        </form>
+                      </td>          
+                      <td class="td-actions">
                         <div class="text-center">
                           <form method="post" action="<?php echo site_url("admin/venders_action");?>">
                             <div class="btn-group" role="group">

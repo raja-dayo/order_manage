@@ -68,7 +68,13 @@
 							<div class="form-group row d-flex align-items-center mb-5">
 								<label class="col-lg-2 form-control-label d-flex justify-content-lg-end">Password</label>
 								<div class="col-lg-6">
-									<input type="password" class="form-control" placeholder="Enter Your Password" name="password" value="<?php echo $vendor[0]['password'];;?>">
+									<span>
+										<?php
+											$decrypt_password = rawurldecode($this->encrypt->decode($vendor[0]['password']));
+										?>
+										<input type="password" class="form-control" placeholder="Enter Your Password" name="password" id="myInput" value="<?php echo $decrypt_password;?>">
+									</span>
+									<input type="checkbox" name="show" id="show" onclick="myFunction()"> <label>Show password</label>
 								</div>
 							</div>
 							<div class="form-group row d-flex align-items-center mb-5">
@@ -139,6 +145,16 @@
 		</div>
 	</div>
 
+	<script type="text/javascript">
+		function myFunction() {
+  			var x = document.getElementById("myInput");
+  			if (x.type === "password") {
+    			x.type = "text";
+  			} else {
+    			x.type = "password";
+  			}
+		}
+	</script>
 <?php
 
 	require_once("include/footer.php");

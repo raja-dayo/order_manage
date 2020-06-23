@@ -82,22 +82,9 @@
           Profile
           </a>
           </li>
-          <li>
-          <a href="app-mail.html" class="dropdown-item">
-          Messages
-          </a>
-          </li>
-          <li>
-          <a href="#" class="dropdown-item no-padding-bottom">
-          Settings
-          </a>
-          </li>
+     
           <li class="separator"></li>
-          <li>
-          <a href="pages-faq.html" class="dropdown-item no-padding-top">
-          Faq
-          </a>
-          </li>
+         
           <li><a rel="nofollow" href="<?php echo site_url("login/logout");?>" class="dropdown-item logout text-center"><i class="ti-power-off"></i></a></li>
           </ul>
           </li>
@@ -133,8 +120,8 @@
           </li>
          <li><a href="#dropdown-app2" aria-expanded="false" data-toggle="collapse"><i class="la ti-user"></i><span>Vendors</span></a>
           <ul id="dropdown-app2" class="collapse list-unstyled pt-0">
-            <li><a href="<?php echo site_url("admin/vendor")?>">Vendors</a></li>
-            <li><a href="<?php echo site_url("admin/vendorForm")?>">Add Vendors</a></li>
+             <li><a href="<?php echo site_url("admin/vendorForm")?>">Add Vendors</a></li>
+            <li><a href="<?php echo site_url("admin/vendor")?>">Vendors List</a></li>
           </ul>
           </li>
           <li><a href="#dropdown-app6" aria-expanded="false" data-toggle="collapse"><i class="la la-user"></i><span>Agents</span></a>

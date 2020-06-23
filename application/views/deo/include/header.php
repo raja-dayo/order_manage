@@ -69,15 +69,15 @@
             </a>
           </div>
           <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center pull-right">
-            <span>Vendor</span>
-            <li class="nav-item dropdown"><a id="user" rel="nofollow" data-target="#" href="#" data-toggle="dropdown"     aria-haspopup="true" aria-expanded="false" class="nav-link"><img src="<?php echo base_url()."assets/img/".$_SESSION['data']['vender']['image']?>" alt="..." class="avatar rounded-circle"></a>
+            <span>DEO</span>
+            <li class="nav-item dropdown"><a id="user" rel="nofollow" data-target="#" href="#" data-toggle="dropdown"     aria-haspopup="true" aria-expanded="false" class="nav-link"><img src="<?php echo base_url()."assets/img/".$_SESSION['data']['deo']['image']?>" alt="..." class="avatar rounded-circle"></a>
               <ul aria-labelledby="user" class="user-size dropdown-menu">
                 <li class="welcome">
                   <a href="#" class="edit-profil"><i class="la la-gear"></i></a>
-                  <img src="<?php echo base_url()."assets/img/".$_SESSION['data']['vender']['image']?>" alt="..." class="rounded-circle">
+                  <img src="<?php echo base_url()."assets/img/".$_SESSION['data']['deo']['image']?>" alt="..." class="rounded-circle">
                 </li>
                 <li>
-                  <a href="<?php echo site_url("vender/profile");?>" class="dropdown-item">Profile</a>
+                  <a href="<?php echo site_url("deo/profile");?>" class="dropdown-item">Profile</a>
                 </li>
                
                  <li class="separator"></li>
@@ -95,32 +95,50 @@
     <div class="default-sidebar">
       <nav class="side-navbar box-scroll sidebar-scroll">
         <ul class="list-unstyled">
-      	  <li class="active"><a href="<?php echo site_url("vender/dashboard");?>"><i class="la la-columns"></i>
+      	  <li class="active"><a href="<?php echo site_url("deo/dashboard");?>"><i class="la la-columns"></i>
             <span>Dashboard</span></a>
       	  </li>
         
           <li><a href="#dropdown-app1" aria-expanded="false" data-toggle="collapse"><i class="la la-puzzle-piece"></i>
             <span>  Order Manage</span></a>
             <ul id="dropdown-app1" class="collapse list-unstyled pt-0">
-              <li><a href="<?php echo site_url("vender/newOrder")?>">New Order</a></li>
-              <li><a href="<?php echo site_url("vender/order")?>">Order List</a></li>
-              <li><a href="<?php echo site_url("vender/deliver_orders")?>">Deliver Order</a></li>
+              <li><a href="<?php echo site_url("deo/newOrder")?>">New Order</a></li>
+              <li><a href="<?php echo site_url("deo/orders")?>">Order List</a></li>
+              <li><a href="<?php echo site_url("deo/deliver_orders")?>">Deliver Order</a></li>
             </ul>
           </li>
 
-          <li><a href="#dropdown-app2" aria-expanded="false" data-toggle="collapse"><i class="la la-puzzle-piece"></i>
+         <!-- <li><a href="#dropdown-app2" aria-expanded="false" data-toggle="collapse"><i class="la la-puzzle-piece"></i>
             <span>  Customer Manage</span></a>
             <ul id="dropdown-app2" class="collapse list-unstyled pt-0">
-              <li><a href="<?php echo site_url("vender/customerForm")?>">New Customer</a></li>
-              <li><a href="<?php echo site_url("vender/customerList")?>">Customers</a></li>
+              <li><a href="<?php echo site_url("deo/customerForm")?>">New Customer</a></li>
+              <li><a href="<?php echo site_url("deo/customerList")?>">Customers</a></li>
             </ul>
+          </li>-->
+           <li><a href="#dropdown-app4" aria-expanded="false" data-toggle="collapse"><i class="ti ti-layout-grid3"></i><span>Category Manage</span></a>
+          <ul id="dropdown-app4" class="collapse list-unstyled pt-0">
+            <li><a href="<?php echo site_url("deo/addCategoryForm")?>">Add Category</a></li>
+            <li><a href="<?php echo site_url("deo/category")?>">Category List</a></li>
+          </ul>
           </li>
-           <li><a href="#dropdown-app8" aria-expanded="false" data-toggle="collapse"><i class="la la-puzzle-piece"></i>
+          <li><a href="#dropdown-app8" aria-expanded="false" data-toggle="collapse"><i class="ti ti-package"></i><span>Product Manage</span></a>
+          <ul id="dropdown-app8" class="collapse list-unstyled pt-0">
+            <li><a href="<?php echo site_url("deo/addProduct")?>">Add Product</a></li>
+            <li><a href="<?php echo site_url("deo/productList")?>">Product List</a></li>
+          </ul>
+          </li>
+           <!--<li><a href="#dropdown-app9" aria-expanded="false" data-toggle="collapse"><i class="la la-puzzle-piece"></i>
             <span>  Agent Manage</span></a>
-            <ul id="dropdown-app8" class="collapse list-unstyled pt-0">
-              <li><a href="<?php echo site_url("vender/agentForm")?>">Add Agent</a></li>
-              <li><a href="<?php echo site_url("vender/agentList")?>">Agent List</a></li>
+            <ul id="dropdown-app9" class="collapse list-unstyled pt-0">
+              <li><a href="<?php //echo site_url("deo/agentForm")?>">Add Agent</a></li>
+              <li><a href="<?php //echo site_url("deo/agentList")?>">Agent List</a></li>
             </ul>
+          </li>-->
+           <li><a href="#dropdown-app10" aria-expanded="false" data-toggle="collapse"><i class="la la-cubes"></i><span>Inventory</span></a>
+          <ul id="dropdown-app10" class="collapse list-unstyled pt-0">
+            <li><a href="<?php echo site_url("deo/manage_stock")?>">Manage Stock</a></li>
+            <li><a href="<?php echo site_url("deo/stock_list")?>">Stock List</a></li>
+          </ul>
           </li>
         </ul>
       </nav>
