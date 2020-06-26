@@ -49,25 +49,24 @@
           </div>
           <div class="widget-body">
             <form class="form-horizontal" method="POST" id="form" action="<?php echo site_url("admin/orderSave");?>">
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Customer</label>
-                    <div class="col-lg-9">
-                      <input type="text" class="form-control" name="customer" id="customer"
-                        value="<?php
-                            if(isset($_GET['customer_name']))
-                            {
-                              echo $_GET['customer_name'];
-                            }
-                            if($this->session->flashdata('alpha'))
-                            {
-                                echo $this->session->flashdata('alpha');
-                            }
-                         ?>">
-                         <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="name_msg" style="display: none;"></p>
-                         <div id="ajax_response"></div>
-                    </div>
-                
+              <div class="form-group row d-flex align-items-center mb-5">
+                <label class="col-lg-3 form-control-label">Customer</label>
+                <div class="col-lg-9">
+                  <input type="text" class="form-control" name="customer" id="customer"
+                    value="<?php
+                      if(isset($_GET['customer_name']))
+                        {
+                          echo $_GET['customer_name'];
+                        }
+                        if($this->session->flashdata('alpha'))
+                        {
+                            echo $this->session->flashdata('alpha');
+                        }
+                     ?>">
+                      <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="name_msg" style="display: none;"></p>
+                      <div id="ajax_response"></div>
                 </div>
+              </div>
               <div class="form-group row d-flex align-items-center mb-5">
                 <label class="col-lg-3 form-control-label">Order No</label>
                 <div class="col-lg-9">
@@ -114,6 +113,55 @@
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="quantity_msg" style="display: none;"></p>
                 </div>
               </div>
+              
+               <div class="widget-header bordered no-actions d-flex align-items-center">
+                <h4>Shipping Order Address</h4>
+              </div>
+              
+             
+              <div class="widget-body" id="cards">
+                <div class="form-group row d-flex align-items-center mb-5">
+                  <label class="col-lg-3 form-control-label">Country</label>
+                  <div class="col-lg-9">
+                    <select class="custom-select form-control" name="country_id" id="country">
+                    <option value="">Select Here</option>
+                    <?php
+                      foreach ($countries as $key => $country) {
+                        ?>
+                          <option value="<?php echo $country['country_id'];?>"><?php echo strtoupper($country['country_name']);?></option> 
+                        <?php
+                      }
+                    ?>
+                  </select>
+                     <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="country_msg" style="display: none;"></p>
+                  </div>
+                </div>
+
+                <div class="form-group row d-flex align-items-center mb-5">
+                  <label class="col-lg-3 form-control-label">State</label>
+                  <div class="col-lg-9">
+                   <select class="custom-select form-control" name="state_id" id="select_state">
+                    <option value="">Select Here</option>
+                  </select>
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="state_msg" style="display: none;"></p>
+                  </div>
+                </div>
+                <div class="form-group row d-flex align-items-center mb-5">
+                  <label class="col-lg-3 form-control-label">Street Address</label>
+                  <div class="col-lg-9">
+                    <input type="text" class="form-control" name="address" id="add" placeholder="Enter Street Address">
+                    <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="add_msg" style="display: none;"></p>
+                  </div>
+                </div>
+                <div class="form-group row d-flex align-items-center mb-5">
+                  <label class="col-lg-3 form-control-label">Postal Code</label>
+                  <div class="col-lg-9">
+                    <input type="text" class="form-control" name="p_code" id="p_code" placeholder="Enter Your Postal Code">
+                    <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="p_code_msg" style="display: none;"></p>
+                  </div>
+                </div>
+              </div> 
+
               <div class="form-group row mb-5">
                 <label class="col-lg-3 form-control-label">Payment Method</label>
                 <div class="col-lg-9 select mb-3">
@@ -151,19 +199,20 @@
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="agent_msg" style="display: none;"></p>
                 </div>
               </div>
+             
+
               <div class="widget-header bordered no-actions d-flex align-items-center">
                 <h4>Card And Details</h4>
               </div>
               <div class="widget-body" id="cards">
-                 <div class="form-group row d-flex align-items-center mb-5">
+                <div class="form-group row d-flex align-items-center mb-5">
                   <label class="col-lg-3 form-control-label">Card Type</label>
                   <div class="col-lg-9">
                     <select class="custom-select form-control" name="cardType" id="cardType" disabled="true">
                       <option value="">Select Here</option>
                       <option value="visa">Visa</option>
                       <option value="master card">Master Card</option>
-                       <option value="discover">Discover</option>
-
+                      <option value="discover">Discover</option>
                     </select>
                     <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="cardType_msg" style="display: none;"></p>
                   </div>
@@ -189,22 +238,23 @@
                      <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="date_msg" style="display: none;"></p>
                   </div>
                 </div>
-              <input type="hidden" name="customer_id" value="<?php
-                if(isset($_GET['customer_id']))
-                {
-                  echo $_GET['customer_id'];
-                }
-               
-              ?>">
-              <input type="hidden" name="hidden_customer_id" value="<?php
-                if($this->session->flashdata('bita'))
-                {
-                  echo $this->session->flashdata('bita');
-                }
-              ?>">
-              <div class="text-center">
-                <button type="submit" class="btn btn-primary ripple mr-1 mb-2">Save</button>
               </div>
+                <input type="hidden" name="customer_id" value="<?php
+                  if(isset($_GET['customer_id']))
+                  {
+                    echo $_GET['customer_id'];
+                  }
+                 
+                ?>">
+                <input type="hidden" name="hidden_customer_id" value="<?php
+                  if($this->session->flashdata('bita'))
+                  {
+                    echo $this->session->flashdata('bita');
+                  }
+                ?>">
+                <div class="text-center">
+                  <button type="submit" class="btn btn-primary ripple mr-1 mb-2">Save</button>
+                </div>
             </form>
           </div>
         </div>
@@ -261,7 +311,106 @@
     }
     
     var payment_method =$("#p_method").val();
-    if(payment_method=="cradit card")
+    
+    if($("#customer").val()==="" || $("#orderNo").val()==="" || $("#product").val()==="" || $("#quantity").val()==="" || $("#sell_pro").val()==="" || $("#p_method").val()==="" || $("#country").val()==="" || $("#select_state").val()==="" || $("#add").val()==="" || $("#p_code").val()==="")
+    {
+      if($("#sell_pro").val()==="")
+      {
+        $("#sell_pro_msg").html("Please enter selling prise");  
+      }
+      if ($("#p_method").val()==="")
+      {
+        $("#p_method_msg").html("Please enter payment method");  
+      }
+      if($("#customer").val()==="")
+      {
+        $("#name_msg").html("Please enter your name");  
+      }
+      if($("#country").val()==="")
+      {
+        $("#country_msg").html("Please select your country");  
+      }
+      if($("#select_state").val()==="")
+      {
+        $("#state_msg").html("Please select your country state");  
+      }
+      if($("#add").val()==="")
+      {
+        $("#add_msg").html("Please enter your street address");  
+      }
+      if($("#p_code").val()==="")
+      {
+        $("#p_code_msg").html("Please enter your postal code");  
+      }
+      if($("#orderNo").val()==="")
+      {
+        var abc= $("#orderNo").val();
+        //alert(abc);
+        $("#order_msg").html("Please enter order number"); 
+      }
+      else
+      {
+        var abc= $("#orderNo").val();
+        if(isNaN(Number(abc)))
+        {
+          $("#order_msg").html("Please enter only number");
+
+          return false;
+        }
+      }
+      if($("#product").val()==="Select Here")
+      {
+        $("#product_msg").html("Please enter product"); 
+      }
+      if($("#quantity").val()==="")
+      {
+        $("#quantity_msg").html("Please enter quantity"); 
+      }
+      
+      if(payment_method=="cash app" || payment_method=="pay pal" || payment_method=="zelle" || payment_method=="vemo")
+      {
+        if($("#agent").val()==="")
+        {
+          $("#agent_msg").html("Please enter agent name");  
+          
+          return false;
+        }   
+      }
+      if(payment_method=="cradit card")
+      {
+        if($("#cardType").val()==="" || $("#c_number").val()==="" || $("#cvv_code").val()==="" || $("#ex_date").val()==="")
+        {
+          if($("#cardType").val()==="")
+          {
+            $("#cardType_msg").html("Please enter card type");  
+          }
+          if($("#c_number").val()==="")
+          {
+            $("#c_num_msg").html("Please enter card number");  
+          }    
+          if($("#cvv_code").val()==="")
+          {
+            $("#cvv_code_msg").html("Please enter cvv code");  
+          }
+          if($("#ex_date").val()==="")
+          {
+            $("#date_msg").html("Please enter card expirey date");  
+          }
+
+          return false;
+        }
+      }         
+      return false;
+    }
+    else if(payment_method=="cash app" || payment_method=="pay pal" || payment_method=="zelle" || payment_method=="vemo")
+    {
+      if($("#agent").val()==="")
+      {
+        $("#agent_msg").html("Please enter agent name");     
+        return false;
+      } 
+    }
+    else if(payment_method=="cradit card")
     {
       if($("#cardType").val()==="" || $("#c_number").val()==="" || $("#cvv_code").val()==="" || $("#ex_date").val()==="")
       {
@@ -284,62 +433,7 @@
 
         return false;
       }
-    }
-    else if(payment_method=="cash app" || payment_method=="pay pal" || payment_method=="zelle" || payment_method=="vemo")
-    {
-     if($("#agent").val()==="")
-      {
-        $("#agent_msg").html("Please enter agent name");  
-        return false;
-      }
-      else
-      {
-        return true;
-      }
-      
-    }
-    else if($("#customer").val()==="" || $("#orderNo").val()==="" || $("#product").val()==="" || $("#quantity").val()==="" || $("#sell_pro").val()==="" || $("#p_method").val()==="")
-    {
-      if($("#sell_pro").val()==="")
-      {
-        $("#sell_pro_msg").html("Please enter selling prise");  
-      }
-      if ($("#p_method").val()==="")
-      {
-        $("#p_method_msg").html("Please enter payment method");  
-      }
-      if($("#customer").val()==="")
-      {
-        $("#name_msg").html("Please enter your name");  
-      }
-      if($("#orderNo").val()==="")
-      {
-        var abc= $("#orderNo").val();
-        //alert(abc);
-        $("#order_msg").html("Please enter order number"); 
-        
-      }
-      else
-      {
-        var abc= $("#orderNo").val();
-        if(isNaN(Number(abc)))
-        {
-          $("#order_msg").html("Please enter only number");
-
-          return false;
-        }
-      }
-      if($("#product").val()==="Select Here")
-      {
-        $("#product_msg").html("Please enter product"); 
-      }
-      if($("#quantity").val()==="")
-      {
-        $("#quantity_msg").html("Please enter quantity"); 
-      }
-      
-      return false;
-    }
+    } 
     else
     {
       return true;
@@ -384,7 +478,7 @@
     
     var p_method= $("#p_method").val();
     
-    if(p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zelle")
+    if(p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zell")
     {
       $("#agent").prop("disabled", false);
     }
@@ -433,7 +527,7 @@
 
     //ajax responce get payment method percentage
 
-     function ajax_success(responseText, statusText, XMLHttpRequest)
+    /*function ajax_success(responseText, statusText, XMLHttpRequest)
     {
       if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
       {
@@ -442,12 +536,37 @@
     }
 
     $.ajax({
-      url: "<?php echo site_url("admin/get_percentage_pm");?>",
+      url: "<?php //echo site_url("admin/get_percentage_pm");?>",
       type: "POST",
       data: {p_method:p_method},
       success: ajax_success,
-    });
+    });*/
+      //ajax responce get states with the help of country
   });
+
+  $("#country").change(function(){
+
+      var country_id = $("#country").val();
+      
+      //alert(country_id);
+      function ajax_success(responseText, statusText, XMLHttpRequest)
+      {
+        if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
+        {
+          if(responseText)
+          {
+            $("#select_state").html(responseText);
+          }
+        }
+      }
+
+      $.ajax({
+        url: "<?php echo site_url("admin/getStates"); ?>",
+        type: "POST",
+        data: {country_id:country_id},
+        success: ajax_success,
+      });  
+    });
 
   $("#c_number").keyup(function(){
 

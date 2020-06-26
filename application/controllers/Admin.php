@@ -283,6 +283,9 @@
 			
 			$data['stock']=$this->admin->stock_edit_prodcut_model($stock_id);
 			
+			//echo "<pre>";
+
+			//print_r($data['products']);
 			$this->load->view("admin/edit_stock",$data);	
 		}
 
@@ -335,6 +338,8 @@
 			$result['agents']=$this->admin->agentModel();
 
 			$result['payment_methods']=$this->admin->payment_method_model();
+
+			$result['countries']=$this->admin->getCountriesModel();
 
 			$this->load->view("admin/new_order",$result);
 		}
@@ -459,7 +464,7 @@
 			{
 				$customer_id = rawurldecode($this->encrypt->decode($customer_id));
 		
-				$result=$this->admin->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate);
+				$result=$this->admin->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
 				if($result)
 				{
 					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
@@ -471,7 +476,7 @@
 			{
 				$customer_id = $hidden_customer_id;
 
-				$result=$this->admin->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate);
+				$result=$this->admin->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
 				if($result)
 				{
 					$this->session->set_flashdata('msg', 'Order Has Added Successfully');

@@ -43,7 +43,7 @@
 				<div class="elisyam-bg background-01">
 					<div class="elisyam-overlay overlay-01"></div>
 					<div class="authentication-col-content mx-auto">
-						<h1 class="gradient-text-01">Welcome To Order Management!</h1>
+						<h1 class="gradient-text-01">Welcome To Order Management</h1>
 						<span class="description">
 							
 						</span>

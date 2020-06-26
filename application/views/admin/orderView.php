@@ -56,11 +56,11 @@
               </tr>
               <tr>
                 <th>Address</th>
-                <td><?php echo strtoupper($order[0]['address']);?></td>
+                <td><?php echo strtoupper($order[0]['o_street_address']);?></td>
               </tr>
               <tr>
                 <th>Postal Code</th>
-                <td><?php echo strtoupper($order[0]['postalCode']);?></td>
+                <td><?php echo strtoupper($order[0]['o_postal_code']);?></td>
               </tr>
               <tr>
                 <tr>

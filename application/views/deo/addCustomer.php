@@ -70,52 +70,6 @@
       $("#p_code_msg").html("");
     });
 
-   /* $("#p_method").change(function(){
-      
-      var p_method= $("#p_method").val();
-      
-      if(p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zelle")
-      {
-        $("#agent").prop("disabled", false);
-      }
-    });
-
-    $("#p_method").change(function(){
-      
-      var p_method= $("#p_method").val();
-      
-      if(p_method=="bank" || p_method=="cradit card")
-      {
-        $("#agent").prop("disabled", true);
-        $("#agent").val("");
-      }
-    });
-
-    $("#p_method").change(function(){
-      
-      var p_method= $("#p_method").val();
-      
-      if(p_method=="cradit card")
-      {
-        $("#cardType").prop("disabled", false);
-        $("#c_number").prop("disabled", false);
-        $("#cvv_code").prop("disabled", false);
-        $("#ex_date").prop("disabled", false);
-      }
-    });
-
-    $("#p_method").change(function(){
-      
-      var p_method= $("#p_method").val();
-      
-      if(p_method=="bank" || p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zelle")
-      {
-        $("#cardType").prop("disabled", true);
-        $("#c_number").prop("disabled", true);
-        $("#cvv_code").prop("disabled", true);
-        $("#ex_date").prop("disabled", true);
-      }
-    });*/
     $("form").submit(function(event){
       var fname               =$("#firstname").val()
       var lname               =$("#lastname").val()
@@ -125,26 +79,6 @@
       var state               =$("#select_state").val()
       var postalcode          =$("#postalcode").val()
       var p_method            =$("#p_method").val()    
-     
-       
-      /*if(fname && lname && email && p_number && country && state && address && postalcode && p_method)
-      {
-        return true;
-      }
-      else
-      {
-        $("#fname_msg").html("Please enter first name");
-        $("#lname_msg").html("Please enter last name");
-        $("#email_msg").html("Please enter email");
-        $("#p_number_msg").html("Please enter phone number");
-        $("#country_msg").html("Please select country");
-        $("#state_msg").html("Please select state");
-        $("#address_msg").html("Please enter address");
-        $("#p_code_msg").html("Please enter postal code");
-        $("#p_method_msg").html("Please enter Payment Method");
-
-        return false;
-      }*/
 
       if($("#firstname").val()==="" || $("#lastname").val()==="" || $("#email").val()==="" || $("#p_number").val()===""|| $("#country").val()==="" || $("#select_state").val()==="" || $("#postalcode").val()==="" || $("#address").val()==="")
       {
@@ -187,28 +121,6 @@
         return true;
       }
     });
-
-   /* $("#opt-02").click(function()
-    {  
-      $("#cardType").prop("disabled", false);
-      $("#c_number").prop("disabled", false);
-      $("#cvv_code").prop("disabled", false);
-      $("#ex_date").prop("disabled", false);
-    });
-    $("#opt-01").click(function()
-    {  
-      $("#cardType").prop("disabled", true);
-      $("#c_number").prop("disabled", true);
-      $("#cvv_code").prop("disabled", true);
-      $("#ex_date").prop("disabled", true);
-    });
-    $("#opt-03").click(function()
-    {  
-      $("#cardType").prop("disabled", true);
-      $("#c_number").prop("disabled", true);
-      $("#cvv_code").prop("disabled", true);
-      $("#ex_date").prop("disabled", true);
-    });*/
   });   
 </script>
 
@@ -293,7 +205,7 @@
                 </div>
               </div>
 
-               <div class="form-group row mb-5">
+              <div class="form-group row mb-5">
                 <label class="col-lg-3 form-control-label">State</label>
                 <div class="col-lg-9 select mb-3">
                   <select class="custom-select form-control" name="state_id" id="select_state">

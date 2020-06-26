@@ -25,6 +25,10 @@
 			{
 				return redirect('vender/dashboard');
 			}
+			else if(isset($_SESSION['data']['deo']))
+			{
+				return redirect('deo/dashboard');
+			}
 			else
 			{
 				$this->load->view("login");
@@ -34,48 +38,50 @@
 		public function login_process()
 		{
 			extract($_REQUEST);
-			
-			//$this->load->model("LoginModel", "lModel");
-
+		
 			$data=$this->login->login_new($email);
 
-			$decrypt_password= $data[0]['password'];
-
-
-			$decrypt_password = rawurldecode($this->encrypt->decode($decrypt_password));
-			
-
-			if($password==$decrypt_password && $email==$data[0]['email'] && $data[0]['status']==1)
+			if($data)
 			{
-				if($data[0]['roll_id']==1)
-				{	
-					$_SESSION['data']['admin']=$data[0];
 				
-					return redirect("admin/dashboard");
-				}
-				else if($data[0]['roll_id']==2)
+				$decrypt_password= $data[0]['password'];
+
+
+				$decrypt_password = rawurldecode($this->encrypt->decode($decrypt_password));
+
+				if($password==$decrypt_password && $email==$data[0]['email'] && $data[0]['status']==1)
 				{
+					if($data[0]['roll_id']==1)
+					{	
+						$_SESSION['data']['admin']=$data[0];
 					
-					$_SESSION['data']['vender']=$data[0];
+						return redirect("admin/dashboard");
+					}
+					else if($data[0]['roll_id']==2)
+					{
+						
+						$_SESSION['data']['vender']=$data[0];
+						
+						return redirect("vender/dashboard");
+					}
+					else if($data[0]['roll_id']==3)
+					{
+						$_SESSION['data']['deo']=$data[0];
 					
-					return redirect("vender/dashboard");
+						return redirect("deo/dashboard");
+					}
 				}
-				else if($data[0]['roll_id']==3)
+				else
 				{
-					$_SESSION['data']['deo']=$data[0];
-					
-					//echo "kjgf";
-					return redirect("deo/dashboard");
+					$this->session->set_flashdata("msg", "Email or password is incorrect");
+					return redirect("login");
 				}
 			}
 			else
 			{
-				//echo "ghalat aa";
 				$this->session->set_flashdata("msg", "Email or password is incorrect");
 				return redirect("login");
-			}
-			die;
-				//*/	
+			}	
 		}
 
 		public function forgot_password()
@@ -85,7 +91,6 @@
 
 		public function pass_reset()
 		{
-			//$result=$this->login->check_email($_REQUEST['email']);
 			if(isset($_REQUEST['email']))
 			{
 				$result=$this->login->check_email($_REQUEST['email']);
@@ -130,15 +135,12 @@
 
 			        	if($this->email->send())
 			        	{
-			        		//echo "yes";
 			        		$this->load->view('get_code');
 			        	}
 			        	else
 			        	{
 							echo $this->email->print_debugger();
-
-			        	}//$this->load->view('email_view');*/
-						
+			        	}	
 					}	
 				}
 				else

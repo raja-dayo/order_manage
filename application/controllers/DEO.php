@@ -1,7 +1,7 @@
 <?php
 	defined('BASEPATH') OR exit('No direct script access allowed');
 
-	class DEO extends Ci_controller{
+	class Deo extends Ci_controller{
 
 		public function __construct()
 		{
@@ -41,6 +41,8 @@
 
 			$result['payment_methods']=$this->DEO->payment_method_model();
 
+			$result['countries']=$this->DEO->getCountriesModel();
+
 			$this->load->view("deo/new_order",$result);
 		}
 
@@ -53,6 +55,7 @@
 				$_REQUEST['cvvCode']	="NULL";
 				$_REQUEST['expiryDate'] ="NULL";		
 			}
+
 			if(!isset($_REQUEST['agent']))
 			{
 				$_REQUEST['agent'] ="NULL";
@@ -61,13 +64,13 @@
 			//echo "<pre>";
 			//print_r($_REQUEST);
 			extract($_REQUEST);
-			//die;
+		
 			if($hidden_customer_id=="")
 				
 			{
 				$customer_id = rawurldecode($this->encrypt->decode($customer_id));
 		
-				$result=$this->DEO->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate);
+				$result=$this->DEO->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
 				if($result)
 				{
 					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
@@ -79,7 +82,7 @@
 			{
 				$customer_id = $hidden_customer_id;
 
-				$result=$this->DEO->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate);
+				$result=$this->DEO->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
 				if($result)
 				{
 					$this->session->set_flashdata('msg', 'Order Has Added Successfully');

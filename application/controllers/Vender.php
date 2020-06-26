@@ -114,11 +114,13 @@
 
 		public function newOrder()
 		{	
-			$result=$this->AdminVender->productsModel();
+			$data['products']=$this->AdminVender->productsModel();
 
 			$data['agents']=$this->Vender->get_agent_model($_SESSION['data']['vender']['id']);
 			
-			$data['products']=$result;
+			$data['payment_methods']=$this->Vender->payment_method_model();
+
+			$data['countries']=$this->Vender->getCountry();
 
 			$this->load->view("vender/newOrder", $data);
 		}
@@ -159,12 +161,10 @@
 					//$customer_id = rawurldecode($this->encrypt->decode($_REQUEST['customer_id']));	
 					
 					 $customer_id = rawurldecode($this->encrypt->decode($customer_id));
-					//$result=$this->Vender->addOrder($_REQUEST['orderNo'], $customer_id, $_REQUEST['product_id'], $_REQUEST['quantity'],$_REQUEST['sell_pro']);
-					 //echo "<br/>";
-					 //echo $cardNumber." ".$cardType." ".$cvvCode." ".$expiryDate;
+					
 
 					
-					$result=$this->Vender->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $cardType, $cardNumber, $cvvCode, $expiryDate);
+					$result=$this->Vender->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
 					if($result)
 					{
 						$this->session->set_flashdata('msg', 'Order Has Added Successfully');
@@ -179,7 +179,7 @@
 
 					//$result=$this->Vender->addOrder($_REQUEST['orderNo'], $customer_id, $_REQUEST['product_id'], $_REQUEST['quantity']);
 
-					$result=$this->Vender->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $cardType, $cardNumber, $cvvCode, $expiryDate);
+					$result=$this->Vender->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
 					if($result)
 					{
 						$this->session->set_flashdata('msg', 'Order Has Added Successfully');

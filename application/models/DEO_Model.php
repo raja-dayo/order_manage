@@ -210,8 +210,8 @@
 				WHERE orders.vender_id=users.id
 				AND orders.customer_id=customers.customer_id 
 				AND orders.product_id=products.id 
-				AND customers.country_id=country.country_id 
-				AND customers.state_id=states.state_id 
+				AND orders.o_country_id=country.country_id 
+				AND orders.o_state_id=states.state_id  
 				AND orders.order_id='".$id."'"
 			);
 			
@@ -304,7 +304,7 @@
 			return $result->result_array();
 		}
 
-		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date)
+		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date,$country_id, $state_id, $address,$p_code)
 		{
 			$data=array(
 
@@ -314,6 +314,10 @@
 				"product_id"			=> $product_id,
 				"order_quantity"		=> $quantity,
 				//"amount"				=> $amount,
+				"o_country_id"			=> $country_id,
+				"o_state_id"			=> $state_id,
+				"o_street_address"		=> $address,
+				"o_postal_code"			=> $p_code,
 				//"ship_date"				=> $shipDate,
 				//"state_id"				=> $state,
 				//"postal_code"			=> $postalCode,
