@@ -4,7 +4,7 @@
 	{
 		public function getStateModel($id)
 		{
-			$result=$this->db->query("SELECT * FROM States Where country_id='".$id."'");
+			$result=$this->db->query("SELECT state_name as text, state_id as value FROM states Where country_id='".$id."'");
 			
 			return $result->result_array();
 		}
@@ -32,8 +32,8 @@
 			return $result->result_array();
 		}
 
-
-		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $card_type, $card_number, $cvv_number, $card_ex_date, $country_id, $state_id, $address, $p_code)
+		/*
+		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date,$order_date)
 		{
 			$data=array(
 
@@ -42,10 +42,11 @@
 				"customer_id"			=> $customer_id,
 				"product_id"			=> $product_id,
 				"order_quantity"		=> $quantity,
-				"o_country_id"			=> $country_id,
-				"o_state_id"			=> $state_id,
-				"o_street_address"		=> $address,
-				"o_postal_code"			=> $p_code,
+				"order_date"			=>	$order_date,
+			//	"o_country_id"			=> $country_id,
+			//	"o_state_id"			=> $state_id,
+			//	"o_street_address"		=> $address,
+			//	"o_postal_code"			=> $p_code,
 				//"amount"				=> $amount,
 				//"ship_date"				=> $shipDate,
 				//"state_id"				=> $state,
@@ -55,6 +56,7 @@
 				"sell_product_cost"		=> $product_sell,
 				"payment_method"		=> $payment_method,
 				"agent"					=> $agent,
+				"agent_percentage"		=> $agent_percentage,	
 				"card_type"				=> $card_type,
 				"card_number"			=> $card_number,
 				"cvv_number"			=> $cvv_number,
@@ -65,7 +67,7 @@
 			
 			return $result;
 		}
-
+		*/
 		public function getEmailModel($email)
 		{
 			$records=$this->db->query("select email from customers where email='".$email."'");
@@ -75,9 +77,17 @@
 
 		public function orderList()
 		{
-			$records=$this->db->query("select * from orders,customers,products where orders.customer_id=customers.customer_id AND orders.product_id=products.id AND orders.vender_id='".$_SESSION['data']['vender']['id']."' AND orders.deleted='no' Order By order_id DESC");
 
-			return $records->result_array();
+
+			$result=$this->db->query("SELECT * FROM users, orders, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id
+				AND orders.vender_id='".$_SESSION['data']['vender']['id']."' 
+				AND orders.deleted='no' Order By order_id DESC " 
+			);
+	
+			return $result->result_array();
 		}
 
 		public function countOrder()
@@ -113,19 +123,18 @@
 			
 			return $result->result_array();
 		}
-		public function addCustomerModel($fname, $lname, $email, $phone_no, $country_id, $state_id, $address, $postal_code, $customer_notes)
+		public function addCustomerModel($data)
 		{
 			$data=array(
 
-				"firstName"			=> $fname,
-				"lastName"			=> $lname,
-				"email"				=> $email,
-				"number"			=> $phone_no,
-				"country_id"		=> $country_id,
-				"state_id"			=> $state_id,
-				"address"			=> $address,
-				"postalCode"		=> $postal_code,
-				"customer_notes"	=> $customer_notes,
+				"firstName"			=> $data['firstName'],		
+				"lastName"			=> $data['lastName'],		
+				"email"				=> $data['email'],			
+				"number"			=> $data['phoneNumber'], 	
+				"country_id"		=> $data['country_id'],		
+				"state_id"			=> $data['state_id'], 		
+				"address"			=> $data['address'], 		
+				"postalCode"		=> $data['postalCode'],
 				"added_by"			=> $_SESSION['data']['vender']['id'],
 				"added_on"			=> time()
 			);
@@ -245,15 +254,14 @@
 
 		public function orderViewModel($id)
 		{
-			$result=$this->db->query("SELECT *  FROM users, customers, products, country, states,orders
+			$result=$this->db->query("SELECT *  FROM users, customers, products, country, orders
 				LEFT JOIN agents ON orders.agent = agents.a_id
 				WHERE orders.vender_id=users.id
 				AND orders.customer_id=customers.customer_id 
 				AND orders.product_id=products.id 
-				AND orders.o_country_id=country.country_id 
-				AND orders.o_state_id=states.state_id 
+				AND customers.country_id=country.country_id 
 				AND orders.order_id='".$id."'");
-			
+	
 			return $result->result_array();
 		}
 
@@ -317,8 +325,6 @@
 
 		public function add_agent_model($vender_id, $name, $lname, $number, $agent_per, $country_id, $state_id)
 		{
-	
-
 			$data=array(
 
 				"a_first_name"	   		=>$name,
@@ -337,8 +343,10 @@
 		}
 		public function payment_method_model()
 		{
-			$result=$this->db->query("select * from payment_method");
+			//$result=$this->db->query("select * from payment_method");
 			
+			$result=$this->db->get("payment_method");
+				
 			return $result->result_array();
 		}
 	}

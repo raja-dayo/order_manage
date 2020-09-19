@@ -81,7 +81,7 @@
                 </div>
               </div>
               <div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-3 form-control-label">Unit Prise</label>
+                <label class="col-lg-3 form-control-label">Unit Price</label>
                 <div class="col-lg-9">
                   <input type="text" class="form-control" name="prize" id="prise" value="<?php echo $product[0]['prize'];?>">
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="prise_msg" style="display: none;"></p>

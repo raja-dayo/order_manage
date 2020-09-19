@@ -54,7 +54,7 @@
                         <td style="width: 100px;"><?php echo  date('d-M-y',$orders['o_create_on']);?></td>
                         <td>
                         	<form method="post" action="<?php echo site_url("admin/order_view");?>">
-                       			<button type="submit" value="<?php echo $orders['order_id']; ?>" name="order_id" class="btn btn-gradient-01 my_button">View</button>
+                       			<button type="submit" value="<?php echo $orders['orderNo']; ?>" name="order_id" class="btn btn-gradient-01 my_button">View</button>
                      		</form>
                       	</td>
                       	

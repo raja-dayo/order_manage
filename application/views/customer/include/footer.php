@@ -25,20 +25,20 @@
 
 </div>
 
-<script src="<?php echo base_url()."assets/vendors/js/base/jquery.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/base/jquery.min.js"?>" type="text/javascript"></script>
 <script src="<?php echo base_url()."assets/vendors/js/base/core.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
 
 
-<script src="<?php echo base_url()."assets/vendors/js/nicescroll/nicescroll.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script src="<?php echo base_url()."assets/vendors/js/chart/chart.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/nicescroll/nicescroll.min.js"?>" type="text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/chart/chart.min.js"?>" type="text/javascript"></script>
 <script src="<?php echo base_url()."assets/vendors/js/progress/circle-progress.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script src="<?php echo base_url()."assets/vendors/js/calendar/moment.min.js" ?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script src="<?php echo base_url()."assets/vendors/js/calendar/fullcalendar.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script src="<?php echo base_url()."assets/vendors/js/owl-carousel/owl.carousel.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script src="<?php echo base_url()."assets/vendors/js/app/app.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/calendar/moment.min.js" ?>" type="text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/calendar/fullcalendar.min.js"?>" type="text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/owl-carousel/owl.carousel.min.js"?>" type="text/javascript"></script>
+<script src="<?php echo base_url()."assets/vendors/js/app/app.js"?>" type="text/javascript"></script>
 
 
-<script src="<?php echo base_url()."assets/js/dashboard/db-default.min.js"?>" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
+<script src="<?php echo base_url()."assets/js/dashboard/db-default.min.js"?>" type="text/javascript"></script>
 
 <script src="<?php echo base_url()."assets/ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js"?>" data-cf-settings="6c83b599e7d384d448a8bda2-|49" defer=""></script></body>
 

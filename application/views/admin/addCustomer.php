@@ -4,6 +4,13 @@
   require_once("include/header.php");
   
 ?>
+<style type="text/css">
+  .aaa {
+position: absolute;
+visibility:hidden;
+display:none;
+}
+</style>
 <script type="text/javascript">
   $(document).ready(function(){
    
@@ -119,10 +126,11 @@
     $("form").submit(function(event){
       var fname               =$("#firstname").val()
       var lname               =$("#lastname").val()
-      var email               =$("#email").val()
+     // var email               =$("#email").val()
       var p_number            =$("#p_number").val()
       var country             =$("#country").val()
-      var state               =$("#select_state").val()
+      var state                = $("input[name=state_id]").val();
+     // var state               =$(".state").val()
       var postalcode          =$("#postalcode").val()
       var p_method            =$("#p_method").val()    
      
@@ -145,8 +153,8 @@
 
         return false;
       }*/
-
-      if($("#firstname").val()==="" || $("#lastname").val()==="" || $("#email").val()==="" || $("#p_number").val()===""|| $("#country").val()==="" || $("#select_state").val()==="" || $("#postalcode").val()==="" || $("#address").val()==="")
+      
+      if($("#firstname").val()==="" || $("#lastname").val()==="" ||  $("#p_number").val()===""|| $("#country").val()==="" || $("input[name=state_id]").val();==="" || $("#postalcode").val()==="" || $("#address").val()==="")
       {
         if($("#firstname").val()==="")
         {
@@ -156,10 +164,10 @@
         {
           $("#lname_msg").html("Please enter your last name");  
         }    
-        if($("#email").val()==="")
+        /*if($("#email").val()==="")
         {
           $("#email_msg").html("Please enter your email");  
-        }
+        }*/
         if($("#p_number").val()==="")
         {
           $("#p_number_msg").html("Please enter your phone number");  
@@ -188,27 +196,7 @@
       }
     });
 
-   /* $("#opt-02").click(function()
-    {  
-      $("#cardType").prop("disabled", false);
-      $("#c_number").prop("disabled", false);
-      $("#cvv_code").prop("disabled", false);
-      $("#ex_date").prop("disabled", false);
-    });
-    $("#opt-01").click(function()
-    {  
-      $("#cardType").prop("disabled", true);
-      $("#c_number").prop("disabled", true);
-      $("#cvv_code").prop("disabled", true);
-      $("#ex_date").prop("disabled", true);
-    });
-    $("#opt-03").click(function()
-    {  
-      $("#cardType").prop("disabled", true);
-      $("#c_number").prop("disabled", true);
-      $("#cvv_code").prop("disabled", true);
-      $("#ex_date").prop("disabled", true);
-    });*/
+  
   });   
 </script>
 
@@ -245,7 +233,7 @@
           </div>
           <div class="widget-body">
             <form class="form-horizontal" method="POST" action="<?php echo site_url("admin/add_customer");?>">
-              <div class="form-group row d-flex align-items-center mb-5">
+              <div class="form-group row d-flex align-items-center mb-5" id="aaa">
                 <label class="col-lg-3 form-control-label">First Name</label>
                 <div class="col-lg-9">
                   <input type="text" class="form-control" name="firstName" id="firstname" placeholder="Enter Your First Name">
@@ -293,16 +281,27 @@
                 </div>
               </div>
 
-               <div class="form-group row mb-5">
+               <div class="form-group row mb-5" id="state_div">
                 <label class="col-lg-3 form-control-label">State</label>
                 <div class="col-lg-9 select mb-3">
-                  <select class="custom-select form-control" name="state_id" id="select_state">
+                  <select class="custom-select form-control state" name="state" id="select_state">
                     <option value="">Select Here</option>
                   </select>
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="state_msg" style="display: none;"></p>
                 </div>
               </div>
-             
+                
+
+              <div class="form-group row d-flex align-items-center mb-5" id="new_text_div">
+                <label class="col-lg-3 form-control-label">New State Text</label>
+                <div class="col-lg-9">
+                  <input type="text" class="form-control state" name="state_id" id="new_text" placeholder="Enter Your Last Name">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="lname_msg" style="display: none;"></p>
+                </div>
+              </div>
+
+
+
                <div class="form-group row d-flex align-items-center mb-5">
                 <label class="col-lg-3 form-control-label">Address</label>
                 <div class="col-lg-9">
@@ -319,12 +318,7 @@
                 </div>
               </div>
 
-              <div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-3 form-control-label">Customer Notes</label>
-                <div class="col-lg-9">
-                  <textarea class="form-control" name="customer_notes"></textarea>
-                </div>
-              </div>
+              
 
              <!-- <div class="form-group row mb-5">
                 <label class="col-lg-3 form-control-label">Payment Method</label>
@@ -445,6 +439,7 @@
   
   $(document).ready(function()
   {
+    $("#new_text_div").addClass("aaa");
     $("#email").blur(function(){
 
       var email = $("#email").val();
@@ -460,7 +455,7 @@
             
             $("#email_msg").css({"color":"red"});
 
-            $("#email").focus();
+            //$("#email").focus();
 
             $("#email").val("");
           }
@@ -482,27 +477,52 @@
     $("#country").change(function(){
 
       var country_id = $("#country").val();
-      
-      function ajax_success(responseText, statusText, XMLHttpRequest)
+          //alert(country_id);
+      if(country_id==2)
       {
-        if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
+        //$("#state_div").css("display","block");
+        // 
+        $("#state_div").show();
+        $("#new_text_div").addClass("aaa");
+
+        function ajax_success(responseText, statusText, XMLHttpRequest)
         {
-          if(responseText)
+          if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
           {
-            $("#select_state").html(responseText);
+            if(responseText)
+            {
+              $("#select_state").html(responseText);
+            }
           }
         }
-      }
 
-      $.ajax({
-        url: "<?php echo site_url("admin/getStates"); ?>",
-        type: "POST",
-        data: {country_id:country_id},
-        success: ajax_success,
-      });  
+        $.ajax({
+          url: "<?php echo site_url("admin/getStates"); ?>",
+          type: "POST",
+          data: {country_id:country_id},
+          success: function(response){
+              var data = $.parseJSON(response);
+              
+
+              $.each(data, function (index, value) {
+                //alert(value.text);
+                $('#select_state').append($('<option/>', { 
+                  value: value.text, 
+                  text : value.text 
+                }));
+              });    
+          },
+        });
+      }
+      else{
+        //alert("kjl");//$("p").hide();
+        $("#state_div").hide();
+        
+         $("#new_text_div").removeClass("aaa");
+      }
     });
 
-    $("#c_number").keyup(function(){
+    /*$("#c_number").keyup(function(){
 
       var c_number = $("#c_number").val();  
 
@@ -518,9 +538,9 @@
       {
         $("#c_num_msg").html("");
       }
-    });
+    });*/
 
-    $("#cvv_code").keyup(function(){
+    /*$("#cvv_code").keyup(function(){
 
       var cvv_code = $("#cvv_code").val();  
 
@@ -536,9 +556,9 @@
       {
         $("#cvv_code_msg").html("");
       }
-    });
+    });*/
 
-    $("#ex_date").keyup(function(){
+    /*$("#ex_date").keyup(function(){
       
       var ex_date = $("#ex_date").val();
 
@@ -559,6 +579,6 @@
       {
         $("#date_msg").html("Please enter valid formate date 02/25");
       }
-    });
+    });*/
   });
 </script>

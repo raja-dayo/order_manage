@@ -25,7 +25,7 @@
               </div>
              <div class="media-body align-self-center">
                 <div class="title text-facebook">
-                  <a href="<?php echo site_url("deo/pending_orders");?>">Pending Orders</a>
+                  <a href="<?php echo site_url("");?>">Pending Orders</a> <!--deo/pending_orders-->
                 </div>
                 <div class="number"><?php echo $pending_order[0]['num']; ?></div>
               </div>
@@ -42,7 +42,7 @@
               </div>
               <div class="media-body align-self-center">
                 <div class="title text-linkedin">
-                  <a href="<?php echo site_url("deo/in_process_orders");?>">Order In Process</a>
+                  <a href="<?php echo site_url("");?>">Order In Process</a> <!--deo/in_process_orders-->
                 </div>
                 <div class="number"><?php echo $order_process[0]['num']; ?></div>
               </div>
@@ -59,7 +59,7 @@
               </div>
               <div class="media-body align-self-center">  
                 <div class="title text-twitter">
-                  <a href="<?php echo site_url("deo/deliver_orders");?>">Deliver Orders</a>
+                  <a href="<?php echo site_url("");?>">Deliver Orders</a> <!--deo/deliver_orders-->
                 </div>
                 <div class="number"><?php echo $order_deliver[0]['num']; ?></div>
               </div>

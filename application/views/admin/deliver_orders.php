@@ -50,7 +50,7 @@
                       <td><?php echo $orders['product']?></td>
                       <td><?php echo $orders['order_quantity']?></td>
                       <td><span class="badge-text badge-text-small success"><?php echo "Deliver"; ?></span></td>
-                      <td style="width: 100px;"><?php echo date('d-M-y', $orders['o_create_on']); ?></td>
+                      <td style="width: 100px;"><?php echo $orders["order_date"]; //date('d-M-y', $orders['o_create_on']); ?></td>
                       <td style="width: 100px;"><?php echo date('d-M-y', $orders['o_update_on']); ?></td>
                       <td><?php echo $orders['tracking_id']?></td>
                       <td>

@@ -57,7 +57,19 @@
                       <td><span class="text-primary"><?php echo $product['product']; ?></span></td>
                       
                       <td><?php echo $product['description']?></td>
-                      <td><?php echo $product['prize']."$"?></td>
+                      <td>
+                          <?php 
+                          if($product['p_currency']=='usd')
+                          {
+                             echo $product['prize']."$";
+                            
+                          }
+                          else
+                          {
+                            echo $product['prize']."£";
+                          }
+                         ?> 
+                      </td>
                       <td>
                         <img src="<?php echo base_url()."assets/img/".$product['image']?>" alt="..." style="width: 100px; height: 100px;">
                       </td>

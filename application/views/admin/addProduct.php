@@ -77,14 +77,31 @@
                   <textarea class="form-control" name="productDescription"></textarea>
                 </div>
               </div>
-              <div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-3 form-control-label">Unit Price <span style="color: red;">*</span></label>
-                <div class="col-lg-9">
-                  <input type="text" class="form-control" name="prize" id="prise" value="<?php echo set_value('prize'); ?>">
-                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="prise_msg" style="display: none;"></p>
-                  <?php echo form_error('prize','<p style="color:red;">','</p>'); ?>
+              <!--<div class="form-group row mb-5">
+              <label class="col-lg-4 form-control-label d-flex justify-content-lg-end">Currency <span style="color: red;">*</span></label>
+              <div class="col-lg-1">
+                <div class="custom-control custom-radio styled-radio mb-3">
+                  <input class="custom-control-input" type="radio" name="currency[]" id="opt-01" value="usd">
+                  <label class="custom-control-descfeedback" for="opt-01">USD</label>
+                  <div class="invalid-feedback">Toggle this custom radio</div>
                 </div>
               </div>
+              <div class="col-lg-1">
+                <div class="custom-control custom-radio styled-radio mb-3">
+                  <input class="custom-control-input" type="radio" name="currency[]" id="opt-02" value="gbp">
+                  <label class="custom-control-descfeedback" for="opt-02">GBP</label>
+                  <div class="invalid-feedback">Or toggle this other custom radio</div>
+                </div>
+              </div>
+            </div>-->
+              <!--<div class="form-group row d-flex align-items-center mb-5">
+                <label class="col-lg-3 form-control-label">Unit Price <span style="color: red;">*</span></label>
+                <div class="col-lg-9">
+                  <input type="text" class="form-control" name="prize" id="prise" value="<?php //echo set_value('prize'); ?>">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="prise_msg" style="display: none;"></p>
+                  <?php //echo form_error('prize','<p style="color:red;">','</p>'); ?>
+                </div>
+              </div>-->
              
               <div class="row">
                 <div class="col-sm-5"></div>

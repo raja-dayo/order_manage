@@ -1,5 +1,6 @@
 <?php
-
+	
+	error_reporting(0);
 	defined('BASEPATH') OR exit('No direct script access allowed');
 
 	class Admin Extends Ci_Controller
@@ -152,7 +153,8 @@
 		public function addVender()
 		{
 			extract($_REQUEST);
-
+            
+            
 			$encrypt_pass = urldecode($this->encrypt->encode($name));
 
 			$flag=$this->admin->addVenderModel($name, $lname, $email, $encrypt_pass ,$number, $country, $site);
@@ -189,7 +191,7 @@
 			
 			$this->form_validation->set_rules('productName', 'Product', 'required');
 
-			$this->form_validation->set_rules('prize', 'Prize', 'required');
+			//$this->form_validation->set_rules('prize', 'Prize', 'required');
 
 			//$this->form_validation->set_rules('image', 'Document', 'required');
 			if (empty($_FILES['image']['name']))
@@ -218,7 +220,7 @@
 
 		            $file_name= $data['upload_data']['file_name'];
 
-		        	$flag=$this->admin->addproductModel($category_id, $productName, $file_name, $productDescription, $prize);
+		        	$flag=$this->admin->addproductModel($category_id, $productName, $file_name, $productDescription);
 		        	if($flag)
 					{
 						$this->session->set_flashdata("msg", "Product Hase Been Added");
@@ -266,8 +268,13 @@
 
 		public function save_stock()
 		{
+			
+			$_REQUEST['unit_price']=$_REQUEST['stock_price']/$_REQUEST['stock'];
+			
 			extract($_REQUEST);
-			$result=$this->admin->save_stock_model($product, $quantity);
+			$result=$this->admin->save_stock_model($product, $stock, $stock_price);
+			
+			$this->admin->product_price($product,$unit_price);
 			
 			if($result)
 			{
@@ -277,16 +284,28 @@
 	
 		public function edit_stock()
 		{
-			extract($_REQUEST);
-			
-			$data['products']=$this->admin->productsModel();
-			
-			$data['stock']=$this->admin->stock_edit_prodcut_model($stock_id);
-			
-			//echo "<pre>";
+			if(isset($_REQUEST['delete_stock_id'])){
 
-			//print_r($data['products']);
-			$this->load->view("admin/edit_stock",$data);	
+				//echo $_REQUEST['delete_stock_id'];
+
+				$result=$this->admin->delete_stock($_REQUEST['delete_stock_id']);
+				
+				return redirect('admin/stock_list');
+			}
+			else{
+
+				extract($_REQUEST);
+				
+				$data['products']=$this->admin->productsModel();
+				
+				$data['stock']=$this->admin->stock_edit_prodcut_model($stock_id);
+				
+				//echo "<pre>";
+
+				//print_r($data['products']);
+				$this->load->view("admin/edit_stock",$data);
+			}
+				
 		}
 
 		public function update_stock()
@@ -309,7 +328,7 @@
 		}
 		public function orders()
 		{
-			$records=$this->admin->orderList();
+			$records=$this->adminvender->order_list();
 			
 			$data['records']=$records;
 
@@ -318,8 +337,16 @@
 
 		public function order_view()
 		{
-			$data['order']=$this->admin->orderViewModel($_POST['order_id']);
+			if($this->session->flashdata('msg'))
+			{
+
+				$_REQUEST['order_id']=$this->session->flashdata('msg');
+				
+			}
 			
+			$data['orders']=$this->adminvender->orderViewModel($_REQUEST['order_id']);
+			
+
 			$this->load->view("admin/orderView",$data);
 		}
 
@@ -341,7 +368,26 @@
 
 			$result['countries']=$this->admin->getCountriesModel();
 
+			$result['d_method']=$this->adminvender->getDeliveryMethod();
+
 			$this->load->view("admin/new_order",$result);
+		}
+
+		public function order_delete(){
+
+			//echo "<pre>";
+			//print_r($_POST);
+
+			$result=$this->admin->delete_order_detail($_POST['delete_order']);
+
+			if($result){
+				$res=$this->admin->delete_order($_POST['delete_order']);
+				
+				if($res){
+					return redirect('admin/orders');
+				}
+			}
+			
 		}
 
 		public function get_product_cost()
@@ -350,13 +396,16 @@
 
 			$result=$this->admin->productCostModel($_POST['product_id']);
 			
-			echo $result[0]['prize'];
+			//echo $result[0]['prize'];
+			
+			echo json_encode($result);
 		}
 
 		public function search()
 		{
 			$pattern=$_POST['pattern'];
-
+            
+           
 			if(!empty($pattern))
 			{
 				$records=$this->adminvender->searchModel($pattern);
@@ -367,11 +416,11 @@
 						<ul>
 							<?php
 								foreach ($records as $key => $emails) {
-									$name=$emails['firstName']." ".$emails['lastName'];
-
+									$name=$emails['firstName'];//." ".$emails['lastName'];
+                                    
 									$encryptId=urldecode($this->encrypt->encode($emails['customer_id']));
 									?>
-										<li style="padding: 3px;"><a href="<?php echo site_url("admin/new_order?customer_name=$name&customer_id=$encryptId"); ?>"><?php echo $emails['email']?></a></li>
+										<li style="padding: 3px;"><a href="<?php echo site_url("admin/new_order?customer_name=$name&customer_id=$encryptId"); ?>"><?php  echo $name;?></a></li>
 									<?php
 								}
 							?>
@@ -407,19 +456,21 @@
 		public function add_Customer()
 		{
 			//echo "<pre>";
+
 			//print_r($_REQUEST);
-
-			extract($_REQUEST);
-
-			
-			$record=$this->admin->addCustomerModel($firstName, $lastName, $email, 
-			$phoneNumber, $country_id ,$state_id, $address ,$postalCode, $customer_notes);
-			
+			if($_REQUEST['state_id']==""){
+				
+				$_REQUEST['state_id']=$_REQUEST['state'];
+			}
+		
+			$record=$this->admin->addCustomerModel($_REQUEST);
 			
 			$abc= $record[0]['firstName']." ".$record[0]['lastName'];
+			
 			$xyz=$record[0]['customer_id'];
 
 			$this->session->set_flashdata('alpha', $abc);
+			
 			$this->session->set_flashdata('bita', $xyz);
 
 			if($record)
@@ -436,14 +487,27 @@
 		{
 			$records=$this->admin->getStateModel($_REQUEST['country_id']);
 			
-			$data['records']= $records;
+			//	$data['records']= $records;
 			
-			$this->load->view("admin/ajaxStates", $data);
+			echo json_encode($records);
 		}
 		
+
+		public function check_orderNo()
+		{			
+			$flag=$this->adminvender->checkOrderNoModel($_POST['num']);
+			
+			if($flag)
+			{
+				$msg="Order No alredy inserted";
+
+				echo json_encode($msg); 
+			}			
+		}
 		public function orderSave()
 		{
-			if(!isset($_REQUEST['cardNumber']) || !isset($_REQUEST['cardType']) || !isset($_REQUEST['cvvCode']) || !isset($_REQUEST['expiryDate']))
+		  
+		   if(!isset($_REQUEST['cardNumber']) || !isset($_REQUEST['cardType']) || !isset($_REQUEST['cvvCode']) || !isset($_REQUEST['expiryDate']))
 			{ 
 				$_REQUEST['cardNumber'] ="NULL";
 				$_REQUEST['cardType']	="NULL";
@@ -455,35 +519,140 @@
 				$_REQUEST['agent'] ="NULL";
 				$_REQUEST['pm_percentage'] ="NULL";
 			}
-			//echo "<pre>";
-			//print_r($_REQUEST);
+			
 			extract($_REQUEST);
-			//die;
+			$rst=$this->adminvender->getSingleDeliveryMethod($d_method);
+			
 			if($hidden_customer_id=="")
 				
 			{
-				$customer_id = rawurldecode($this->encrypt->decode($customer_id));
+				$_REQUEST['customer_id'] = rawurldecode($this->encrypt->decode($customer_id));
+				$_REQUEST['vender_id'] =$_SESSION['data']['admin']['id'];
 		
-				$result=$this->admin->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
+				foreach ($_SESSION['product'] as $key => $product) {
+					
+					$result=$this->adminvender->addOrderDetail($orderNo, $product['pro'], $product['qun'], $product['cost']);
+				
+				    $amount[]=$product['qun']*$product['cost'];
+				}
+					
+				$_REQUEST['amount']=array_sum($amount)+$rst[0]['d_shipping_charges'];
+				
+				$result=$this->adminvender->addOrder($_REQUEST);
+
 				if($result)
 				{
-					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
+					unset($_SESSION['product']);
+					$this->session->set_flashdata('msg', "Order No $orderNo Has Added Successfully");
 						
 					return redirect("admin/new_order");
 				}
 			}
 			else
 			{
-				$customer_id = $hidden_customer_id;
+				$_REQUEST['customer_id'] = $hidden_customer_id;
+				
+				$_REQUEST['vender_id'] =$_SESSION['data']['admin']['id'];
+				
+				foreach ($_SESSION['product'] as $key => $product) {
+					
+					$result=$this->adminvender->addOrderDetail($orderNo, $product['pro'], $product['qun'], $product['cost']);
 
-				$result=$this->admin->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
+					$amount[]=$product['qun']*$product['cost'];
+				}
+
+				$_REQUEST['amount']=array_sum($amount)+$rst[0]['d_shipping_charges'];
+
+				$result=$this->adminvender->addOrder($_REQUEST);
+
 				if($result)
 				{
-					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
+					unset($_SESSION['product']);
+					$this->session->set_flashdata('msg', "Order Has $orderNo Added Successfully");
 						
 					return redirect("admin/new_order");
 				}
 			}
+		}
+		
+		public function add_more(){
+
+
+			$abc=$this->adminvender->get_product_name($_POST['data']['pro']);
+			
+			$_POST['data']['product']=$abc[0]['product'];
+			$_POST['data']['total']=$_POST['data']['cost']*$_POST['data']['qun'];
+
+
+			$_SESSION['product'][]=$_POST['data'];
+			echo json_encode($_POST);
+		}
+
+		public function delete_pro(){
+
+			//echo "<pre>";
+			//print_r($_SESSION['product']);
+			foreach ($_SESSION['product'] as $key => $product) {
+				if($product['pro']==$_POST['id']){
+					unset($_SESSION['product'][$key]);
+				}
+			}
+			//echo "<pre>";
+			//print_r($_SESSION['product']);
+			echo json_encode($_SESSION['product']);
+		}
+
+		public function update_order_product_page(){
+            
+			if(isset($_POST['od_id']))
+			{
+				$result['pro']=$this->adminvender->getproducts_name($_REQUEST['product']);
+            
+				$result['products']=$this->admin->productsModel();
+    	
+				$this->load->view('admin/multiple_product_page',$result);
+			}
+			else if(isset($_POST['delete']))
+			{
+				$flag=$this->admin->deleteOrderDetail($_POST['delete']);
+
+				if($flag)
+				{
+					$result=$this->admin->getOrderSum($_REQUEST['orderNo']);
+
+					foreach ($result as $key => $res) {
+						$sum['abc']+=$res['od_product_quantity']*$res['od_product_price'];
+					}
+
+					$total =$sum['abc']+$result[0]['d_shipping_charges'];
+
+					$result=$this->admin->updateOrderTotal($_REQUEST['orderNo'],$total);
+					
+
+					$this->session->set_flashdata("msg", $_REQUEST['orderNo']);
+
+					return redirect('admin/order_view');
+				}
+			}
+            
+		}
+
+		public function order_update_product(){
+
+			
+			$this->admin->updateOrderDetail($_REQUEST);
+			
+			$result=$this->admin->getOrderSum($_REQUEST['orderNo']);
+
+			foreach ($result as $key => $res) {
+				$sum['abc']+=$res['od_product_quantity']*$res['od_product_price'];
+			}
+			
+			$total =$sum['abc']+$result[0]['d_shipping_charges'];
+
+			$result=$this->admin->updateOrderTotal($_REQUEST['orderNo'],$total);
+
+			return redirect('admin/orders');
 		}
 
 		public function addCategoryForm()
@@ -590,11 +759,14 @@
 		{
 			if(isset($_POST['edit']))
 			{
+				//echo $_POST['edit'];
 				
 				$data['categories']=$this->admin->getCategoryModel();
 				
 				$data['product']=$this->admin->editProductModel($_POST['edit']);
 				
+				//echo "<pre>";
+				//print_r($data['product']);
 				$this->load->view("admin/updateProduct",$data);
 			}
 			else
@@ -693,11 +865,32 @@
 		{
 			if(isset($_POST['edit']))
 			{
-				echo $_REQUEST['edit'];
+				//echo $_REQUEST['edit'];
+				$data['countries']=$this->admin->getCountriesModel();
+				$data['result']=$this->adminvender->editCustoemrModel($_REQUEST['edit']);
+
+				$this->load->view("admin/edit_customer_form",$data);
 			}
 			else
 			{
 				echo $_REQUEST['delete'];
+			}
+		}
+		public function update_customer(){
+
+			//echo "<pre>";
+			//print_r($_POST);
+			//die;
+			$result=$this->adminvender->updateCustomerModel($_REQUEST,$_REQUEST['c_id']);
+			
+			
+			if($result){
+
+				$this->session->set_flashdata("msg", "Customer data has updated Successfully");
+				
+				return redirect("admin/customer");
+			}else{
+				echo "ghalata aa";
 			}
 		}
 
@@ -764,33 +957,33 @@
 			}
 		}
 
-		public function updateOrder()
+		public function updateOrderTracking()
 		{
-			//echo "<pre>";
-			//print_r($_REQUEST);
-			//o_quantity
-			//die;
-			//echo $_POST['orderId'];
-			if($_REQUEST['status']==3 || $_REQUEST['status']==4)
+			if($_REQUEST['status']==2)
 			{
-				$this->admin->insert_order_history_model($_POST['orderId'],$_POST['tracking'],$_POST['amount'],$_POST['[status']);
+				$result=$this->adminvender->update_order($_REQUEST);			
+
+				return redirect("admin/orders");
 			}
-
-			
-			$result['pro']=$this->admin->product_stock_qunatity($_POST['orderId']);
-			
-			$previous_quantity= $result['pro'][0]['s_product_qunatity'];
-			
-			$current_quantity=$previous_quantity-$_POST['o_quantity'];
-			
-			$stock_id         =$result['pro'][0]['s_id'];
-
-			$result=$this->admin->update_order($_POST['orderId'], $_POST['status'], $_POST['tracking']);
-
-			$this->admin->update_stock_product_model($stock_id, $current_quantity);
-			//die;
-			if($result)
+			else if($_REQUEST['status']==3)
 			{
+				for ($i=0; $i<count($_REQUEST['o_quantity']) ; $i++) { 
+
+					$result=$this->adminvender->update_stock_qunatity($_REQUEST['o_quantity'][$i],$_REQUEST['order_product'][$i]);
+				}	
+				
+				$_REQUEST['amount']=array_sum($_REQUEST['amount']);
+				
+				$result=$this->adminvender->insert_order_history_model($_REQUEST);
+
+				$result=$this->adminvender->update_order($_REQUEST);
+				
+				return redirect("admin/orders");
+			}			
+			else
+			{
+				$result=$this->adminvender->update_order($_REQUEST);			
+
 				return redirect("admin/orders");
 			}
 		}	
@@ -901,35 +1094,56 @@
 			
 			$this->load->view("admin/refund_orders",$data);
 		}
+
+		public function shipping(){
+
+			$data['shipping']=$this->admin->getShipping();
+			
+			$this->load->view('admin/shipping',$data);
+		}
+
+		public function shipping_action(){
+
+			$data['ship']=$this->admin->editShip($_POST['edit']);
+			
+			$this->load->view('admin/editShipping',$data);
+		}
+
+		public function updateShip(){
+			
+			$result=$this->admin->updateShip($_REQUEST);
+			
+			if($result){
+				
+				return redirect('admin/shipping');
+			}
+		}
 		public function sendEmail()
-		{
-
-			$result=$this->admin->emailMsg();
-			echo "<pre>";
-			print_r($result);
-
-			$result[0]['create_on'];
-			/*
-			$config['protocol']    = 'smtp';
-        	$config['smtp_host']    = 'ssl://smtp.gmail.com';
-        	$config['smtp_port']    = '465';
-        	$config['smtp_timeout'] = '7';
-        	$config['smtp_user']    = 'hyder.php.developer@gmail.com';
-        	$config['smtp_pass']    = '2K14cse_172';
-        	$config['charset']    = 'utf-8';
-        	$config['newline']    = "\r\n";
-        	$config['mailtype'] = 'text'; // or html
-        	$config['validation'] = TRUE; // bool whether to validate email or not      
+	    {
+			
+			$result['data']=$this->admin->emailMsg();
+			
+			$config['protocol']         = 'smtp';
+        	$config['smtp_host']        = 'ssl://om.infinix-tech.com';
+        	$config['smtp_port']        = '465';
+        	$config['smtp_user']        = 'no-reply@om.infinix-tech.com';
+        	$config['smtp_pass']        = 'om.Infinix';
+        	$config['smtp_timeout']     = '7';
+        	$config['charset']          = 'utf-8';
+        	$config['newline']          = "\r\n";
+        	$config['mailtype']         = 'html'; // or html
+        	$config['validation']       = TRUE; // bool whether to validate email or not      
 
         	$this->email->initialize($config);
 
-			$this->email->from('hyder.php.developer@gmail.com', 'Infinix Tech Solution Pvt Ltd');
+			$this->email->from('no-reply@om.infinix-tech.com', 'Infinix Tech Solution Pvt Ltd');
         	
         	$this->email->to('rajadayo1@Gmail.com'); 
 
         	$this->email->subject('Email Test');
-        
-        	$this->email->message('Testing the email class.');  
+        	
+
+        	$this->email->message($this->load->view('admin/email',$result, TRUE));  
 
         	if($this->email->send())
         	{
@@ -939,7 +1153,7 @@
         	{
 				echo $this->email->print_debugger();
 
-        	}//$this->load->view('email_view');*/
+        	}
     	}		
 	}
 ?>

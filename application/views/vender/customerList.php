@@ -28,7 +28,7 @@
                 <th>Customer Name</th>
                 <th>Email</th>
                 <th>Contact Number</th>
-                <th><span style="width:100px;">Status</span></th>
+          
                 <th>Actions</th>
               </tr>
             </thead>
@@ -42,22 +42,7 @@
                       <td><?php echo $customer['firstName']." ".$customer['lastName']; ?></td>
                       <td><span class="text-primary"><?php echo $customer['email']; ?></span></td>
                       <td><?php echo $customer['number']?></td>
-                      <td><span style="width:100px;">
-                        <?php 
-                          if($customer['status']==1)
-                          {
-                            //echo "Pending";
-                            ?>
-                              <span class="badge-text badge-text-small info"><?php echo "Active"; ?></span>
-                            <?php
-                          }
-                          else
-                          {
-                            ?>
-                              <span class="badge-text badge-text-small danger"><?php echo "Inactive"; ?></span>
-                            <?php
-                          }
-                        ?></span></span></td>
+                    
                       <td class="td-actions">
                         <?php
                           
@@ -71,7 +56,7 @@
                         
                                                       
                         ?>
-                        <a href="<?php echo site_url("vender/updateForm/?customerId=$encryptId");?>" id="abc"><i class="la la-edit edit"></i></a>
+                        <a href="<?php echo site_url("vender/updateCustomerForm/?customerId=$encryptId");?>" id="abc"><i class="la la-edit edit"></i></a>
                         <a href="<?php echo site_url("vender/deleteCustomer/?customerId=$customer[customer_id]")?>"><i class="la la-close delete"></i></a>
                       </td>
                     </tr>

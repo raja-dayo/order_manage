@@ -13,23 +13,22 @@
     $("#country").change(function(){
 
       var country_id = $("#country").val();
-      
-      function ajax_success(responseText, statusText, XMLHttpRequest)
-      {
-        if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
-        {
-          if(responseText)
-          {
-            $("#select_state").html(responseText);
-          }
-        }
-      }
-
       $.ajax({
         url: "<?php echo site_url("vender/getStates"); ?>",
         type: "POST",
         data: {country_id:country_id},
-        success: ajax_success,
+        success: function(response){
+             var data = $.parseJSON(response);
+              
+              //alert(response);
+             $.each(data, function (index, value) {
+                
+                            $('#select_state').append($('<option/>', { 
+                                value: value.value,
+                                text : value.text 
+                            }));
+                    });    
+       },
       });  
     });
 

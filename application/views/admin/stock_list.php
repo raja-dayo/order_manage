@@ -39,7 +39,8 @@
               <tr>
                 <th>No</th> 
                 <th>Product</th>
-                <th>Description</th>
+                <th>Stock</th>
+                <th>Stock Price</th>
                 <th>Quantity</th>
                 <th>Actions</th>
               </tr>
@@ -54,7 +55,8 @@
                       <td><?php echo $key+1;?></td>
                       <td><span class="text-primary"><?php echo $s_list['product']; ?></span></td>
                       
-                      <td><?php echo $s_list['description']?></td>
+                      <td><?php echo $s_list['s_stock']?></td>
+                      <td><?php echo $s_list['s_stock_price']?></td>
                       <td><?php echo $s_list['s_product_qunatity']?></td>
                       
                       <td class="td-actions">
@@ -63,6 +65,8 @@
                           <div class="btn-group" role="group">
                             
                             <button type="submit" class="btn btn-gradient-01" name="stock_id" value="<?php echo $s_list['s_id']?>">Edit</button>
+
+                            <button type="submit" class="btn btn-gradient-02" name="delete_stock_id" value="<?php echo $s_list['s_id']?>">Delete</button>
                        </div>
                         </form>
                         </div>

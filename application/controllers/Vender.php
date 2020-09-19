@@ -127,19 +127,13 @@
 
 		public function order()
 		{
-			$records=$this->Vender->orderList();
-			
-			$data['records']=$records;
+			$data['records']=$this->Vender->orderList();
 
-			//echo "<pre>";
-			//print_r($data);
 			$this->load->view("vender/order",$data);
 		}
 
 		public function orderSave()
 		{		
-			//ECHO "<pre>";
-			//print_r($_REQUEST);
 			if(!isset($_REQUEST['cardNumber']) || !isset($_REQUEST['cardType']) || !isset($_REQUEST['cvvCode']) || !isset($_REQUEST['expiryDate']))
 			{ 
 				$_REQUEST['cardNumber'] ="NULL";
@@ -150,78 +144,125 @@
 			if(!isset($_REQUEST['agent']))
 			{
 				$_REQUEST['agent'] ="NULL";
+				$_REQUEST['pm_percentage'] ="NULL";
 			}
 			
-			//print_r($_REQUEST);
 			extract($_REQUEST);
+
+			$rst=$this->AdminVender->getSingleDeliveryMethod($d_method);
+			/*if($d_method==1){
+
+				$d_charges=15;
+			}else if($d_method==2){
+				$d_charges=22.5;
+			}else{
+				$d_charges=38;
+			}*/
 			//die;
-				if($hidden_customer_id=="")
+			if($hidden_customer_id=="")
 				
-				{
-					//$customer_id = rawurldecode($this->encrypt->decode($_REQUEST['customer_id']));	
-					
-					 $customer_id = rawurldecode($this->encrypt->decode($customer_id));
-					
-
-					
-					$result=$this->Vender->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
-					if($result)
-					{
-						$this->session->set_flashdata('msg', 'Order Has Added Successfully');
-						
-						return redirect("vender/newOrder");
-					}
-				}
-				else
-				{
-					 $customer_id = $hidden_customer_id;
-					
-
-					//$result=$this->Vender->addOrder($_REQUEST['orderNo'], $customer_id, $_REQUEST['product_id'], $_REQUEST['quantity']);
-
-					$result=$this->Vender->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
-					if($result)
-					{
-						$this->session->set_flashdata('msg', 'Order Has Added Successfully');
-						
-						return redirect("vender/newOrder");
-					}
-				}
-				
-
-			
-			/*else if(isset($p_method) && $p_method=="cradit card")
 			{
-				echo $cardType;
-			}
-			die;*/
-			/*if($_REQUEST['hidden_customer_id']=="")
-			{
-				$customer_id = rawurldecode($this->encrypt->decode($_REQUEST['customer_id']));	
+				$_REQUEST['customer_id'] = rawurldecode($this->encrypt->decode($customer_id));
+				$_REQUEST['vender_id'] =$_SESSION['data']['vender']['id'];
+		
+				foreach ($_SESSION['product'] as $key => $product) {
+					
+					$result=$this->AdminVender->addOrderDetail($orderNo, $product['pro'], $product['qun'], $product['cost']);
 				
-				$result=$this->Vender->addOrder($_REQUEST['orderNo'], $customer_id, $_REQUEST['product_id'], $_REQUEST['quantity'],$_REQUEST['sell_pro']);
+				    $amount[]=$product['qun']*$product['cost'];
+				}
+					
+				$_REQUEST['amount']=array_sum($amount)+$rst[0]['d_shipping_charges'];
+				
+				$result=$this->AdminVender->addOrder($_REQUEST);
 
 				if($result)
 				{
-					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
-					
+					unset($_SESSION['product']);
+					$this->session->set_flashdata('msg', "Order No $orderNo Has Added Successfully");
+						
 					return redirect("vender/newOrder");
 				}
 			}
 			else
 			{
-				$customer_id = $_REQUEST['hidden_customer_id'];
-			
+				$_REQUEST['customer_id'] = $hidden_customer_id;
+				
+				$_REQUEST['vender_id'] =$_SESSION['data']['vender']['id'];
+				
+				foreach ($_SESSION['product'] as $key => $product) {
+					
+					$result=$this->AdminVender->addOrderDetail($orderNo, $product['pro'], $product['qun'], $product['cost']);
 
-				$result=$this->Vender->addOrder($_REQUEST['orderNo'], $customer_id, $_REQUEST['product_id'], $_REQUEST['quantity']);
+					$amount[]=$product['qun']*$product['cost'];
+				}
+
+				$_REQUEST['amount']=array_sum($amount)+$rst[0]['d_shipping_charges'];
+
+				$result=$this->AdminVender->addOrder($_REQUEST);
 
 				if($result)
 				{
-					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
-					
+					unset($_SESSION['product']);
+					$this->session->set_flashdata('msg', "Order Has $orderNo Added Successfully");
+						
 					return redirect("vender/newOrder");
 				}
-			}*/
+			}				
+		}
+
+		public function add_more(){
+
+			/*
+			$abc=$this->AdminVender->get_product_name($_POST['data']['pro']);
+			
+			$_POST['data']['product']=$abc[0]['product'];
+			$_POST['data']['total']=$_POST['data']['cost']*$_POST['data']['qun'];
+
+
+			$_SESSION['product'][]=$_POST['data'];
+			echo json_encode($_POST);*/
+
+			$cost = $_POST['data']['cost'];
+			$abc=$this->AdminVender->get_product_name($_POST['data']['pro']);
+			
+			$_POST['data']['product']=$abc[0]['product'];
+			$_POST['data']['total']=$_POST['data']['qun']*$cost;
+
+
+			$_SESSION['product'][]=$_POST['data'];
+			echo json_encode($_POST);
+
+
+
+		}
+
+		public function delete_pro(){
+
+			//echo "<pre>";
+			//print_r($_SESSION['product']);
+			foreach ($_SESSION['product'] as $key => $product) {
+				if($product['pro']==$_POST['id']){
+					unset($_SESSION['product'][$key]);
+				}
+			}
+			//echo "<pre>";
+			//print_r($_SESSION['product']);
+			echo json_encode($_SESSION['product']);
+		}
+
+		public function add_another_product_page(){
+
+			$result['products']=$this->AdminVender->productsModel();
+
+			$this->load->view('vender/multiple_product_page',$result);
+		}
+
+		public function add_multiple_product(){
+
+			$this->AdminVender->addOrderDetail($_REQUEST['orderNo'], $_REQUEST['product_id'], $_REQUEST['quantity'], $_REQUEST['sell_pro']);
+			
+			return redirect('vender/order');
 		}
 
 		public function updateOrderForm()
@@ -262,22 +303,54 @@
 			$this->load->view("vender/addCustomer", $data);
 		}
 
-		public function updateForm()
+		public function addCustomer()
+		{
+			if($_REQUEST['state_id']==""){
+				
+				$_REQUEST['state_id']=$_REQUEST['state'];
+			}
+
+			$record=$this->Vender->addCustomerModel($_REQUEST);
+			
+			$abc= $record[0]['firstName']." ".$record[0]['lastName'];
+			
+			$xyz=$record[0]['customer_id'];
+
+			$this->session->set_flashdata('alpha', $abc);
+			
+			$this->session->set_flashdata('bita', $xyz);
+
+			if($record)
+			{
+				return redirect("vender/newOrder");
+			}
+			else
+			{
+				echo "No";
+			}
+		}
+
+		public function customerList()
+		{
+			$records=$this->Vender->getCustomerModel();
+
+			$data['records']=$records;
+
+			$this->load->view("vender/customerList", $data);
+		}
+
+		public function updateCustomerForm()
 		{
 			$customerId= rawurldecode($this->encrypt->decode($_REQUEST['customerId']));
 
-			$customer=$this->Vender->editCustomerModel($customerId);
+			$data['result']=$this->Vender->editCustomerModel($customerId);
 			
-			$country=$this->Vender->getCountry();
+			$data['countries']=$this->Vender->getCountry();
 			
-			$data['customer']=$customer;
-			
-			$data['countries']=$country;
-			
-			$customer_state= $data['customer'][0]['state_id'];
+			//$customer_state= $data['customer'][0]['state_id'];
 
-			$data['states']=$this->Vender->getState($customer_state);
-
+			//$data['states']=$this->Vender->getState($customer_state);
+			
 			$this->load->view("vender/updateForm",$data);
 		}
 
@@ -291,9 +364,6 @@
 			}
 			else
 			{
-				//echo "<pre>";
-				//print_r($_REQUEST);
-				//die;
 				extract($_REQUEST);
 				$flag=$this->Vender->orderUpdateModel($order_id, $customer_id, $product_id, $orderNo, $sell_pro, $quantity);
 				
@@ -302,7 +372,6 @@
 					$this->session->set_flashdata('msg', " $orderNo Order Has Updated");
 					
 					return redirect("vender/order");
-					//echo "yes";
 				}
 				else
 				{
@@ -311,29 +380,11 @@
 			}
 		}
 
-		public function addCustomer()
+		public function deleteCustomer()
 		{
-			extract($_REQUEST);
+			$_REQUEST['customerId'];
 
-			
-			$record=$this->Vender->addCustomerModel($firstName, $lastName, $email, 
-			$phoneNumber, $country_id ,$state_id, $address ,$postalCode, $customer_notes);
-			
-			
-			$abc= $record[0]['firstName']." ".$record[0]['lastName'];
-			$xyz=$record[0]['customer_id'];
-
-			$this->session->set_flashdata('alpha', $abc);
-			$this->session->set_flashdata('bita', $xyz);
-
-			if($record)
-			{
-				return redirect("vender/newOrder");
-			}
-			else
-			{
-				echo "No";
-			}
+			return redirect("vender/customerList");
 		}
 
 		public function checkEmail()
@@ -344,15 +395,6 @@
 			{
 				echo "Email already exits";
 			}
-		}
-
-		public function customerList()
-		{
-			$records=$this->Vender->getCustomerModel();
-
-			$data['records']=$records;
-
-			$this->load->view("vender/customerList", $data);
 		}
 
 		public function search()
@@ -369,11 +411,11 @@
 						<ul>
 							<?php
 								foreach ($records as $key => $emails) {
-									$name=$emails['firstName']." ".$emails['lastName'];
+									$name=$emails['firstName'];//." ".$emails['lastName'];
 
 									$encryptId=urldecode($this->encrypt->encode($emails['customer_id']));
 									?>
-										<li style="padding: 3px;"><a href="<?php echo site_url("vender/newOrder?customer_name=$name&customer_id=$encryptId"); ?>"><?php echo $emails['email']?></a></li>
+										<li style="padding: 3px;"><a href="<?php echo site_url("vender/newOrder?customer_name=$name&customer_id=$encryptId"); ?>"><?php echo $name;?></a></li>
 									<?php
 								}
 							?>
@@ -392,30 +434,22 @@
 		public function getStates()
 		{
 			$records=$this->Vender->getStateModel($_REQUEST['country_id']);
-			
-			$data['records']= $records;
-			
-			$this->load->view("vender/ajaxStates", $data);
+
+			echo json_encode($records);
 		}
 
 		public function updateCustomer()
 		{
-			if(isset($_REQUEST['cancel']))
-			{
-				return redirect("vender/customerList");
-			}
-			else
-			{
-				$customerId= rawurldecode($this->encrypt->decode($_REQUEST['customer_id']));
+				$_REQUEST['c_id']= rawurldecode($this->encrypt->decode($_REQUEST['customer_id']));
 
 				//echo "<pre>";
 				//print_r($_REQUEST);
-				extract($_REQUEST);
+				//extract($_REQUEST);
 				
 				//die;
-				$flag=$this->Vender->updateCustomerModel($firstName, $lastName, $email, 
-				$phoneNumber, $country_id ,$state_id, $address ,$postalCode, $customer_notes,$customerId);
-
+				//$flag=$this->Vender->updateCustomerModel($firstName, $lastName, $email, 
+				//$phoneNumber, $country_id ,$state_id, $address ,$postalCode, $customer_notes,$customerId);
+				$flag=$this->AdminVender->updateCustomerModel($_REQUEST,$_REQUEST['c_id']);
 				if($flag)
 				{
 					$this->session->set_flashdata('msg', 'Customer Has Updated Successfully');
@@ -426,24 +460,15 @@
 				{
 					echo "No";
 				}
-			}
+			
 		}
 
 		public function order_view()
 		{ 
-			//echo "<pre>";
-			//print_r($_REQUEST);
-			//die;
-			$data['order']=$this->Vender->orderViewModel($_POST['order_id']);
 			
-			//echo "<pre>";
-			//print_r($data['order']);
-			//die;
+			$data['orders']=$this->AdminVender->orderViewModel($_POST['order_id']);
+			
 			$this->load->view("vender/orderView",$data);
-		}
-		public function deleteCustomer()
-		{
-			echo $_REQUEST['customerId'];
 		}
 
 		public function deliver_orders()
@@ -459,7 +484,9 @@
 
 			$result=$this->Vender->productCostModel($_POST['product_id']);
 			
-			echo $result[0]['prize'];
+			//echo $result[0]['prize'];
+			
+			echo json_encode($result);
 		}
 
 		public function refund_orders()
@@ -492,8 +519,6 @@
 
 		public function add_agent()
 		{
-			//echo "<pre>";
-			//print_r($_REQUEST);
 			extract($_REQUEST);
 
 			$vender_id=$_SESSION['data']['vender']['id'];

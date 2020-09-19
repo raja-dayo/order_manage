@@ -23,7 +23,7 @@
                 <i class="ti ti-shopping-cart"></i>
               </div>
               <div class="media-body align-self-center">
-                <div class="title text-facebook"><a href="<?php echo site_url()."vender/pending_orders"?>">Pending Orders</a></div>
+                <div class="title text-facebook"><a href="<?php echo site_url("")?>">Pending Orders</a></div><!--."vender/pending_orders"-->
                 <div class="number"><?php echo $result[0]['num']; ?></div>
               </div>
             </div>
@@ -38,7 +38,7 @@
                 <i class="la la-truck"></i>
               </div>
               <div class="media-body align-self-center">  
-                <div class="title text-twitter"><a href="<?php echo site_url()."vender/process_order";?>">Order In Process</a></div>
+                <div class="title text-twitter"><a href="<?php echo site_url("");?>">Order In Process</a></div><!--."vender/process_order"-->
                 <div class="number"><?php echo $pro_ord[0]['num']; ?></div>
               </div>
             </div>
@@ -53,7 +53,7 @@
                 <i class="la la-bank"></i>
               </div>
               <div class="media-body align-self-center">
-                <div class="title text-linkedin"><a href="<?php echo site_url()."vender/deliver_orders"?>">Order Deliver</a></div>
+                <div class="title text-linkedin"><a href="<?php echo site_url("")?>">Order Deliver</a></div><!--."vender/deliver_orders-->
                 <div class="number"><?php echo $deliver_ord[0]['num']; ?></div>
               </div>
             </div>

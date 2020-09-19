@@ -11,8 +11,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <!--
 <script src="../../ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="6c83b599e7d384d448a8bda2-text/javascript"></script>-->
-<script src="http://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script type="6c83b599e7d384d448a8bda2-text/javascript">
+
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+<script type="text/javascript">
           WebFont.load({
             google: {"families":["Montserrat:400,500,600,700","Noto+Sans:400,700"]},
             active: function() {
@@ -134,11 +135,13 @@
               <li><a href="<?php //echo site_url("deo/agentList")?>">Agent List</a></li>
             </ul>
           </li>-->
-           <li><a href="#dropdown-app10" aria-expanded="false" data-toggle="collapse"><i class="la la-cubes"></i><span>Inventory</span></a>
-          <ul id="dropdown-app10" class="collapse list-unstyled pt-0">
-            <li><a href="<?php echo site_url("deo/manage_stock")?>">Manage Stock</a></li>
-            <li><a href="<?php echo site_url("deo/stock_list")?>">Stock List</a></li>
-          </ul>
+           <!--<li><a href="#dropdown-app10" aria-expanded="false" data-toggle="collapse"><i class="la la-cubes"></i><span>Inventory</span></a>
+            <ul id="dropdown-app10" class="collapse list-unstyled pt-0">
+              <li><a href="<?php echo site_url("deo/manage_stock")?>">Manage Stock</a></li>
+              <li><a href="<?php echo site_url("deo/stock_list")?>">Stock List</a></li>
+            </ul>
+          </li>-->
+          <li><a href="<?php echo site_url("deo/customerList");?>"><i class="la la la-users"></i><span>Customers</span></a>
           </li>
         </ul>
       </nav>

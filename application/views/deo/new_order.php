@@ -48,7 +48,7 @@
             <h4>Order Form</h4>
           </div>
           <div class="widget-body">
-            <form class="form-horizontal" method="POST" id="form" action="<?php echo site_url("deo/orderSave");?>">
+            <form class="form-horizontal" method="POST" id="submit" action="<?php echo site_url("deo/orderSave");?>">
               <div class="form-group row d-flex align-items-center mb-5">
                 <label class="col-lg-3 form-control-label">Customer</label>
                 <div class="col-lg-9">
@@ -64,7 +64,9 @@
                         }
                      ?>">
                       <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="name_msg" style="display: none;"></p>
-                      <div id="ajax_response"></div>
+                      <div id="ajax_response">
+                        <ul></ul>
+                      </div>
                 </div>
               </div>
               <div class="form-group row d-flex align-items-center mb-5">
@@ -74,10 +76,17 @@
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="order_msg" style="display: none;"></p>
                 </div>
               </div>
+              <div class="form-group row d-flex align-items-center mb-5">
+                <label class="col-lg-3 form-control-label">Order Date</label>
+                <div class="col-lg-3">
+                  <input type="date" class="form-control" name="order_date" id="order_date">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="order_date_msg" style="display: none;"></p>
+                </div>
+              </div>
            
               <div class="form-group row mb-5">
                 <label class="col-lg-3 form-control-label">Product</label>
-                <div class="col-lg-9 select mb-3">
+                <div class="col-lg-2 select mb-3">
                   <select class="custom-select form-control" name="product_id" id="product">
                     <option>Select Here</option>
                     <?php
@@ -91,77 +100,56 @@
                   </select>
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="product_msg" style="display: none;"></p>
                 </div>
-              </div>
-              <div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-3 form-control-label">Product Cost</label>
-                <div class="col-lg-9">
+                <label class="col-lg-1 form-control-label">Product Cost</label>
+                <div class="col-lg-2">
                   <input type="text" class="form-control" name="pro_cost" id="pro_cost" disabled="true">
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="pro_cost_msg" style="display: none;"></p>
                 </div>
-              </div>
-              <div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-3 form-control-label">Selling Prise</label>
-                <div class="col-lg-9">
-                  <input type="text" class="form-control" name="sell_pro" id="sell_pro">
-                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="sell_pro_msg" style="display: none;"></p>
+                
+                <label class="col-lg-1 form-control-label">Quantity</label>
+                <div class="col-lg-2">
+                  <input type="text" class="form-control" name="quantity" id="quantity">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="quantity_msg" style="display: none;"></p>
                 </div>
+
+                 <div class="col-lg-1"> 
+                  <div class="col-lg-12 text-right"><a href="javascript:void(0)" class="btn btn-primary" id="clear">Add</a></div>
+              
+                  </div>
               </div>
-              <div class="form-group row d-flex align-items-center mb-5">
+           
+            <div class="row" style="margin-top: 10px;" id="main_div" >
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+              <div style="display: none;" id="table_div">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Cost</th>
+                      <th>Qunantity</th>
+                      <th>Total</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="table_body">
+                    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="col-sm-3"></div>
+          </div>
+                
+            
+             <!-- <div class="form-group row d-flex align-items-center mb-5">
                 <label class="col-lg-3 form-control-label">Quantity</label>
                 <div class="col-lg-9">
                   <input type="text" class="form-control" name="quantity" id="quantity">
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="quantity_msg" style="display: none;"></p>
                 </div>
-              </div>
+              </div>-->
               
-               <div class="widget-header bordered no-actions d-flex align-items-center">
-                <h4>Shipping Order Address</h4>
-              </div>
-              
-             
-              <div class="widget-body" id="cards">
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Country</label>
-                  <div class="col-lg-9">
-                    <select class="custom-select form-control" name="country_id" id="country">
-                    <option value="">Select Here</option>
-                    <?php
-                      foreach ($countries as $key => $country) {
-                        ?>
-                          <option value="<?php echo $country['country_id'];?>"><?php echo strtoupper($country['country_name']);?></option> 
-                        <?php
-                      }
-                    ?>
-                  </select>
-                     <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="country_msg" style="display: none;"></p>
-                  </div>
-                </div>
-
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">State</label>
-                  <div class="col-lg-9">
-                   <select class="custom-select form-control" name="state_id" id="select_state">
-                    <option value="">Select Here</option>
-                  </select>
-                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="state_msg" style="display: none;"></p>
-                  </div>
-                </div>
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Street Address</label>
-                  <div class="col-lg-9">
-                    <input type="text" class="form-control" name="address" id="add" placeholder="Enter Street Address">
-                    <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="add_msg" style="display: none;"></p>
-                  </div>
-                </div>
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Postal Code</label>
-                  <div class="col-lg-9">
-                    <input type="text" class="form-control" name="p_code" id="p_code" placeholder="Enter Your Postal Code">
-                    <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="p_code_msg" style="display: none;"></p>
-                  </div>
-                </div>
-              </div> 
-
               <div class="form-group row mb-5">
                 <label class="col-lg-3 form-control-label">Payment Method</label>
                 <div class="col-lg-9 select mb-3">
@@ -182,6 +170,24 @@
                 </div>
               </div>
 
+              <div class="form-group row mb-5">
+                <label class="col-lg-3 form-control-label">Delivery Method</label>
+                <div class="col-lg-9 select mb-3">
+                  <select class="custom-select form-control" name="d_method" id="d_method">
+                    <option value="">Select Here</option>
+                      <?php
+                        foreach ($d_method as $key => $method) {
+                          ?>
+                              <option value="<?php echo $method['id']?>"><?php echo $method['d_name']?></option>
+
+                          <?php
+                        }
+                      ?>
+                  </select>
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="d_method_msg" style="display: none;"></p>
+                </div>
+              </div>
+              
               <div class="form-group row mb-5">
                 <label class="col-lg-3 form-control-label">Agent</label>
                 <div class="col-lg-9 select mb-3">
@@ -272,35 +278,110 @@
 ?>
 
 <script type="text/javascript">
+ $(document).ready(function(){
   
-  $("#customer").keyup(function(){
+ });
 
+$("#clear").click(function(){
+
+    var pro   =$("#product").val();
+    var pro_id  =$("#pro_id").val();
+     //var sell  =$("#sell_pro").val();
+    var pro_cost =$("#pro_cost").val();
+    var qun =$("#quantity").val();
+    
+
+    var cost =parseFloat(pro_cost);
+    $("#product").val("Select Here");
+    $("#pro_id").val("");
+   // $("#sell_pro").val("");
+    $("#pro_cost").val("");
+    $("#quantity").val("");
+    
+    //var person = {firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"};
+    var data={"pro":pro, "cost":cost, "qun":qun}
+    //alert(data);
+    $.ajax({
+      url:"<?php echo site_url("deo/add_more");?>",
+      type:"POST",
+      data:{data:data},
+      success:function(response){
+        alert(response);
+        var data = $.parseJSON(response);
+        
+        alert(data);
+
+        $.each(data, function(index, value){
+                  $("#table_div").css("display", "block");
+              
+                 $("#table_body").append("<tr><td>"+value.product+"</td><td>"+value.cost+'£'+"</td><td>"+value.qun+"</td><td>"+value.total+"</td><td><a href='javaScript:void(0)' class='btn btn-danger delete_user' user-data="+value.pro+">DELETE</a></td></tr>");
+                });
+        
+        /*$.each(data, function(i, item) {
+          alert(data[i].pro);
+      });*/
+      },
+    });
+  });
+
+    $(document).on("click", ".delete_user", function(event){
+
+    var delete_id = $(this).attr("user-data");
+
+    //alert(delete_id);
+    $(this).closest("tr").remove();
+    //$("#table_body").remove();
+    $.ajax({
+
+      url:"<?php echo site_url("deo/delete_pro");?>",
+      type:"POST",
+      data:{id:delete_id},
+      success:function(response){
+        //alert(response);
+        var data = $.parseJSON(response);
+        if(data.length==0){
+          $("#table_div").css("display", "none");
+        }
+        /*$.each(data, function(index, value){
+                  $("#table_div").css("display", "block");
+              
+                  $("#table_body").append("<tr><td>"+value.product+"</td><td>"+value.cost+"</td><td>"+value.sell+"</td><td>"+value.qun+"</td><td>"+value.total+"</td><td><a href='javaScript:void(0)' class='btn btn-danger delete_user' user-data="+value.pro+">DELETE</a></td></tr>");
+                });*/
+      },
+    });
+    });
+  
+
+  $("#customer").keyup(function(){
+    
     var pattern= $("#customer").val();
 
-    function ajax_success(responseText, statusText, XMLHttpRequest)
-    {
-      if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
+    
+
+      function ajax_success(responseText, statusText, XMLHttpRequest)
       {
-        //alert(responseText);
+        if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
+        {
 
-        $("#ajax_response").html(responseText);
+          $("#ajax_response").html(responseText);
+        }
       }
-    }
 
-    $.ajax({
-      url: "<?php echo site_url("deo/search");?>",
-      type: "POST",
-      data: {pattern:pattern},
-      success: ajax_success,
-    });
-
+      $.ajax({
+        url: "<?php echo site_url("deo/search");?>",
+        type: "POST",
+        data: {pattern:pattern},
+        success: ajax_success,
+       
+      });
+   
   });
 
   $("#orderNo").keyup(function(){
     var orderNo = $("#orderNo").val();
   });
 
-  $("#form").submit(function(){
+  $("#submit").submit(function(){
 
     var abc= $("#orderNo").val();
     if(isNaN(Number(abc)))
@@ -312,12 +393,9 @@
     
     var payment_method =$("#p_method").val();
     
-    if($("#customer").val()==="" || $("#orderNo").val()==="" || $("#product").val()==="" || $("#quantity").val()==="" || $("#sell_pro").val()==="" || $("#p_method").val()==="" || $("#country").val()==="" || $("#select_state").val()==="" || $("#add").val()==="" || $("#p_code").val()==="")
+    if($("#customer").val()==="" || $("#orderNo").val()==="" || $("#p_method").val()==="" || $("#country").val()==="" || $("#select_state").val()==="" || $("#add").val()==="" || $("#p_code").val()==="")
     {
-      if($("#sell_pro").val()==="")
-      {
-        $("#sell_pro_msg").html("Please enter selling prise");  
-      }
+      
       if ($("#p_method").val()==="")
       {
         $("#p_method_msg").html("Please enter payment method");  
@@ -358,16 +436,9 @@
           return false;
         }
       }
-      if($("#product").val()==="Select Here")
-      {
-        $("#product_msg").html("Please enter product"); 
-      }
-      if($("#quantity").val()==="")
-      {
-        $("#quantity_msg").html("Please enter quantity"); 
-      }
       
-      if(payment_method=="cash app" || payment_method=="pay pal" || payment_method=="zelle" || payment_method=="vemo")
+      
+      if(payment_method=="CashApp" || payment_method=="Paypal" || payment_method=="ZellePay" || payment_method=="Venmo")
       {
         if($("#agent").val()==="")
         {
@@ -376,8 +447,9 @@
           return false;
         }   
       }
-      if(payment_method=="cradit card")
+      if(payment_method=="Credit Card")
       {
+          
         if($("#cardType").val()==="" || $("#c_number").val()==="" || $("#cvv_code").val()==="" || $("#ex_date").val()==="")
         {
           if($("#cardType").val()==="")
@@ -402,7 +474,7 @@
       }         
       return false;
     }
-    else if(payment_method=="cash app" || payment_method=="pay pal" || payment_method=="zelle" || payment_method=="vemo")
+    else if(payment_method=="CashApp" || payment_method=="Paypal" || payment_method=="ZellePay" || payment_method=="Venmo")
     {
       if($("#agent").val()==="")
       {
@@ -410,8 +482,9 @@
         return false;
       } 
     }
-    else if(payment_method=="cradit card")
+    else if(payment_method=="Credit Card")
     {
+     //alert("jhgkjfhgkjhkjhkj");
       if($("#cardType").val()==="" || $("#c_number").val()==="" || $("#cvv_code").val()==="" || $("#ex_date").val()==="")
       {
         if($("#cardType").val()==="")
@@ -457,19 +530,34 @@
     
     var product_id= $("#product").val();
     
-    function ajax_success(responseText, statusText, XMLHttpRequest)
+    /*function ajax_success(responseText, statusText, XMLHttpRequest)
     {
       if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
       {
         $("#pro_cost").val(responseText+'$');
       }
-    }
+    }*/
 
     $.ajax({
       url: "<?php echo site_url("deo/get_product_cost");?>",
       type: "POST",
       data: {product_id:product_id},
-      success: ajax_success,
+      success:function(response){
+        
+        var data = $.parseJSON(response);
+        
+        $.each(data, function(index, value){
+           
+           if(value.p_currency=='usd'){
+
+              $("#pro_cost").val(value.prize+'$');
+            }
+            else
+            {
+              $("#pro_cost").val(value.prize+'£');
+            }
+        });
+      },
     });
   });
 
@@ -478,8 +566,9 @@
     
     var p_method= $("#p_method").val();
     
-    if(p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zell")
+    if(p_method=="PayPal" || p_method=="CashApp" || p_method=="Venmo" || p_method=="ZellePay")
     {
+      
       $("#agent").prop("disabled", false);
     }
   });
@@ -488,8 +577,9 @@
     
     var p_method= $("#p_method").val();
     
-    if(p_method=="bank" || p_method=="cradit card")
+    if(p_method=="Bank" || p_method=="Credit Card")
     {
+      
       $("#agent").prop("disabled", true);
       $("#agent").val("");
     }
@@ -499,8 +589,9 @@
     
     var p_method= $("#p_method").val();
     
-    if(p_method=="cradit card")
+    if(p_method=="Credit Card")
     {
+      
       $("#cardType").prop("disabled", false);
       $("#c_number").prop("disabled", false);
       $("#cvv_code").prop("disabled", false);
@@ -512,7 +603,7 @@
     
     var p_method= $("#p_method").val();
     
-    if(p_method=="bank" || p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zelle")
+    if(p_method=="Bank" || p_method=="PayPal" || p_method=="CashApp" || p_method=="Venmo" || p_method=="ZellePay")
     {
       $("#cardType").prop("disabled", true);
       $("#c_number").prop("disabled", true);
@@ -536,7 +627,7 @@
     }
 
     $.ajax({
-      url: "<?php //echo site_url("deo/get_percentage_pm");?>",
+      url: "<?php //echo site_url("admin/get_percentage_pm");?>",
       type: "POST",
       data: {p_method:p_method},
       success: ajax_success,

@@ -4,54 +4,6 @@
   require_once("include/header.php");
   
 ?>
-	<script type="text/javascript">
-		// form validation
-		$(document).ready(function(event){
-
-			$('#form').submit(function() {
-				var quantity= $("#quantity").val();
-		        if(isNaN(Number(quantity)))
-		        {
-		        	$("#quantity_msg").html("Please enter only number");
-
-		          	return false;
-		        }
-		        
-		    	if($("#product").val()==="" || $("#quantity").val()==="")
-		      	{
-		      		if($("#product").val()==="")
-		        	{
-		          		$("#product_msg").html("Please Select Product");  
-		        	}
-		        	if($("#quantity").val()==="")
-		        	{
-			          	$("#quantity_msg").html("Please Enter Product Quantity");   
-		        	}
-		      
-		        	return false;
-		      	}
-		      	else
-		      	{
-		      		return true;
-		      	}
-    		});
-    		$("#product").click(function(){
-      			$("#product_msg").html("");
-    		});
-    		$("#quantity").keyup(function(){
-      			$("#quantity_msg").html("");
-    		});
-    		$("#quantity").keyup(function(){
-    			var quantity = $("#quantity").val();
-    			if(isNaN(Number(quantity)))
-    			{
-      				$("#quantity_msg").html("Please enter only number");
-
-      				//return false;
-    			}
-    		});
-		});
-	</script>	
 
 <div class="content-inner">
 	<div class="container-fluid">
@@ -104,11 +56,18 @@
                   </div>
                 </div>
               </div>
-            	<div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-4 form-control-label d-flex justify-content-lg-end">Quantity<span style="color: red;">*</span></label>
+              <div class="form-group row d-flex align-items-center mb-5">
+                <label class="col-lg-4 form-control-label d-flex justify-content-lg-end">Product Stock<span style="color: red;">*</span></label>
                 <div class="col-lg-5">
-                  <input type="text" class="form-control" placeholder="Enter Product Quantity" id="quantity" name="quantity">
-                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="quantity_msg" style="display: none;"></p>
+                  <input type="text" class="form-control" placeholder="Enter Product Stock" id="stock" name="stock">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="stock_msg" style="display: none;"></p>
+                </div>
+              </div>
+            	<div class="form-group row d-flex align-items-center mb-5">
+                <label class="col-lg-4 form-control-label d-flex justify-content-lg-end">Stock Price<span style="color: red;">*</span></label>
+                <div class="col-lg-5">
+                  <input type="text" class="form-control" placeholder="Enter Stock Price" id="stock_price" name="stock_price">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="stock_price_msg" style="display: none;"></p>
                 </div>
               </div>
               <div class="text-center">
@@ -125,3 +84,57 @@
   require_once("include/footer.php");
 
 ?>
+
+
+<script type="text/javascript">
+    // form validation
+    $(document).ready(function(event){
+
+      $('#form').submit(function() {
+        var stock= $("#stock").val();
+            if(isNaN(Number(stock)))
+            {
+              $("#quantity_msg").html("Please enter only number");
+
+                return false;
+            }
+            
+          if($("#product").val()==="" || $("#stock").val()==="" || $("#stock_price").val()==="")
+            {
+              if($("#product").val()==="")
+              {
+                  $("#product_msg").html("Please Select Product");  
+              }
+              if($("#stock").val()==="")
+              {
+                  $("#stock_msg").html("Please Enter Product Stock");   
+              }
+              if($("#stock_price").val()==="")
+              {
+                  $("#stock_price_msg").html("Please Enter Stock Price");   
+              }
+          
+              return false;
+            }
+            else
+            {
+              return true;
+            }
+        });
+        $("#product").click(function(){
+            $("#product_msg").html("");
+        });
+        $("#quantity").keyup(function(){
+            $("#quantity_msg").html("");
+        });
+        $("#quantity").keyup(function(){
+          var quantity = $("#quantity").val();
+          if(isNaN(Number(quantity)))
+          {
+              $("#quantity_msg").html("Please enter only number");
+
+              //return false;
+          }
+        });
+    });
+  </script> 

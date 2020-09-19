@@ -2,6 +2,13 @@
 	
 	class AdminModel extends Ci_Model
 	{
+		public function exModel()
+		{
+		    $result=$this->db->query("INSERT INTO myTable (id)VALUES(NULL)");
+		    
+		    return $result;
+		    
+		}
 		public function getAdminModel($id)
 		{
 			$result=$this->db->query("select * from users where id='".$id."'");
@@ -103,7 +110,12 @@
 
 		public function orderList()
 		{
-			$result=$this->db->query("select * from users, orders, customers, products where orders.vender_id=users.id AND orders.customer_id=customers.customer_id AND orders.product_id=products.id  AND orders.deleted='no' order By order_id DESC");
+			$result=$this->db->query("SELECT * FROM users, orders, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id"
+			);
+			//$result=$this->db->query("select * from users, orders, customers, products where orders.vender_id=users.id AND orders.customer_id=customers.customer_id AND orders.product_id=products.id  AND orders.deleted='no' order By order_id DESC");
 			
 			return $result->result_array();
 		}
@@ -164,15 +176,15 @@
 			return $records->result_array();
 		}
 
-		public function addproductModel($category_id, $product, $image, $description, $prize)
+		public function addproductModel($category_id, $product, $image, $description)
 		{
 			$data=array(
 				'category_id'			=>$category_id,
 				'product'				=>$product,
 				'image'					=>$image,
 				'description'			=>$description,
-				'prize'					=>$prize,
 				'created_on'			=>time(),
+				'status'                =>1,
 			);
 
 			$result=$this->db->insert("products", $data);
@@ -196,7 +208,7 @@
 
 		public function getStateModel($id)
 		{
-			$result=$this->db->query("SELECT * FROM States Where country_id='".$id."'");
+			$result=$this->db->query("SELECT state_name as text, state_id as value FROM states Where country_id='".$id."'");
 			
 			return $result->result_array();
 		}
@@ -208,19 +220,18 @@
 			return $records->result_array();
 		}
 		
-		public function addCustomerModel($fname, $lname, $email, $phone_no, $country_id, $state_id, $address, $postal_code, $customer_notes)
+		public function addCustomerModel($data)
 		{
 			$data=array(
 
-				"firstName"			=> $fname,
-				"lastName"			=> $lname,
-				"email"				=> $email,
-				"number"			=> $phone_no,
-				"country_id"		=> $country_id,
-				"state_id"			=> $state_id,
-				"address"			=> $address,
-				"postalCode"		=> $postal_code,
-				"customer_notes"	=> $customer_notes,
+				"firstName"			=> $data['firstName'],		
+				"lastName"			=> $data['lastName'],		
+				"email"				=> $data['email'],			
+				"number"			=> $data['phoneNumber'], 	
+				"country_id"		=> $data['country_id'],		
+				"state_id"			=> $data['state_id'], 		
+				"address"			=> $data['address'], 		
+				"postalCode"		=> $data['postalCode'],
 				"added_by"			=> $_SESSION['data']['admin']['id'],
 				"added_on"			=> time()
 			);
@@ -286,8 +297,10 @@
 			
 			return $flag;
 		}
+		
+	//	addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date , $country_id, $state_id, $address, $p_code)
 
-		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date , $country_id, $state_id, $address, $p_code)
+	/*	public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date,$order_date)
 		{
 			$data=array(
 
@@ -296,10 +309,11 @@
 				"customer_id"			=> $customer_id,
 				"product_id"			=> $product_id,
 				"order_quantity"		=> $quantity,
-				"o_country_id"			=> $country_id,
-				"o_state_id"			=> $state_id,
-				"o_street_address"		=> $address,
-				"o_postal_code"			=> $p_code,
+				"order_date"			=>	$order_date,
+			//	"o_country_id"			=> $country_id,
+			//	"o_state_id"			=> $state_id,
+			//	"o_street_address"		=> $address,
+			//	"o_postal_code"			=> $p_code,
 				//"amount"				=> $amount,
 				//"ship_date"				=> $shipDate,
 				//"state_id"				=> $state,
@@ -319,20 +333,23 @@
 			$result=$this->db->insert("orders", $data);	
 			
 			return $result;
-		}
+		}*/
+
 		public function orderViewModel($id)
 		{
 			//$result=$this->db->query("select * from users,orders,customers,products,country,states,agents where orders.vender_id=users.id AND orders.customer_id=customers.customer_id AND orders.product_id=products.id AND customers.country_id=country.country_id AND customers.state_id=states.state_id AND orders.order_id='".$id."'");
 
-			$result=$this->db->query("SELECT *  FROM users, customers, products, country, states,orders
+			$result=$this->db->query("SELECT *  FROM users, customers, products, country, delivery_method, order_detail, orders 
 				LEFT JOIN agents ON orders.agent = agents.a_id
 				WHERE orders.vender_id=users.id
 				AND orders.customer_id=customers.customer_id 
-				AND orders.product_id=products.id 
-				AND orders.o_country_id=country.country_id 
-				AND orders.o_state_id=states.state_id 
-				AND orders.order_id='".$id."'"
-			);
+				AND order_detail.od_product_id=products.id 
+				AND customers.country_id=country.country_id 
+				AND orders.delivery_method_id=delivery_method.id
+				AND orders.orderNo=order_detail.orderNo
+				AND order_detail.orderNo='".$id."'
+
+			");
 			
 			return $result->result_array();
 		}
@@ -346,7 +363,11 @@
 
 		public function editProductModel($id)
 		{
-			$result=$this->db->get_where("products",array('id'=>$id));
+			//$result=$this->db->query("select * from products where status=1");
+			
+			$this->db->where('id',$id);
+			$result=$this->db->get("products");
+			//$result=$this->db->get_where("products",array('id'=>$id));
 			
 			return $result->result_array();
 		}
@@ -399,17 +420,25 @@
 
 		public function deliverOrdersModel()
 		{
-			$result=$this->db->query("select * from orders, users, products, customers where orders.vender_id=users.id AND orders.product_id=products.id AND orders.customer_id=customers.customer_id AND orders.order_status=3");
+			/*$result=$this->db->query("select * from orders, users, products, customers where orders.vender_id=users.id AND orders.product_id=products.id AND orders.customer_id=customers.customer_id AND orders.order_status=3");*/
+			$result=$this->db->query("SELECT * FROM users, orders, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id
+				AND orders.order_status=3"
+			);
 			
 			return $result->result_array();
 		}
 
 		public function emailMsg()
 		{
-			$current=time();
-			$abc=$current-86400;
-			$result=$this->db->query("select * from orders where orders.order_status=1 AND orders.create_on > $abc");
-			
+			$result=$this->db->query("SELECT * FROM users, orders, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id
+				AND orders.order_status =1"
+			);
 			return $result->result_array();
 		}
 
@@ -508,20 +537,23 @@
 		public function stockProductsModel()
 		{
 			$result=$this->db->query("SELECT products.id, products.product
-			FROM products
-			WHERE NOT EXISTS (
-				SELECT  * FROM stock
-				WHERE stock.s_product_id = products.id
-			)");
+            FROM products
+            WHERE products.status=1 AND NOT EXISTS (
+            SELECT  * FROM stock
+            WHERE stock.s_product_id = products.id
+            )");
 
 			return $result->result_array();
 		}
-		public function save_stock_model($product, $quantity)
+		public function save_stock_model($product, $stock, $stock_price)
 		{
 			$data=array(
 
 				"s_product_id"			=>$product,
-				"s_product_qunatity"	=>$quantity,
+				"s_stock"				=>$stock,
+				"s_stock_price"			=>$stock_price,
+				"s_product_qunatity"	=>$stock,
+
 				"s_create_on"			=>time(),
 			);
 
@@ -577,15 +609,31 @@
 			$this->db->update("stock",$data);
 		}
 
+		public function delete_stock($id){
+
+			$this->db->where('s_id',$id);
+
+			$result=$this->db->delete('stock');
+			
+			return $result;
+		}
+
 		public function pending_orders_model()
 		{
-			$result=$this->db->query("SELECT * FROM users, orders, customers, products 
+			/*$result=$this->db->query("SELECT * FROM users, orders, customers, products 
 				WHERE orders.vender_id=users.id 
 				AND orders.customer_id=customers.customer_id
 				AND orders.product_id=products.id 
 				AND orders.order_status =1 
 				AND orders.deleted='no' 
 				ORDER BY order_id DESC"
+			);*/
+			
+			$result=$this->db->query("SELECT * FROM users, orders, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id
+				AND orders.order_status =1"
 			);
 
 			return $result->result_array();
@@ -593,15 +641,20 @@
 
 		public function inProcess_orders_model()
 		{
-			$result=$this->db->query("SELECT * FROM users, orders, customers, products 
+			/*$result=$this->db->query("SELECT * FROM users, orders, customers, products 
 				WHERE orders.vender_id=users.id 
 				AND orders.customer_id=customers.customer_id
 				AND orders.product_id=products.id 
 				AND orders.order_status =2 
 				AND orders.deleted='no' 
 				ORDER BY order_id DESC"
+			);*/
+            $result=$this->db->query("SELECT * FROM users, orders, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id
+				AND orders.order_status =2 "
 			);
-
 			return $result->result_array();
 		}
 
@@ -630,6 +683,135 @@
 			);
 
 			$result=$this->db->insert("order_history", $data);
+			
+			return $result;
+		}
+
+		public function getShipping(){
+
+			//$this->db->select('*');
+
+			//$this->db->order_by('id', 'DESC');
+			
+			//$this->db->from('delivery_method');
+			
+			$result=$this->db->get('delivery_method');
+			
+			return $result->result_array();
+		}
+
+		public function editShip($id){
+
+			$this->db->where('id',$id);
+
+			$result=$this->db->get('delivery_method');
+			
+			return $result->result_array();
+		}
+
+		public function updateShip($data){
+
+			$id=$data['id'];
+			$data=array(
+
+				'd_name'				=>$data['ship_name'],
+				'd_currency'			=>$data['currency'],
+				'd_shipping_charges'	=>$data['charge'],
+			);	
+
+			$this->db->where('id', $id);
+			
+			$result=$this->db->update('delivery_method', $data);
+
+			
+			return $result;
+		}
+
+		public function product_price($id, $price){
+
+			$this->db->set('prize', $price);
+
+			$this->db->where('id',$id);
+
+			$result=$this->db->update('products');
+			
+			return $result;
+		}
+
+		public function delete_order_detail($orderNo){
+
+			$this->db->where('orderNo',$orderNo);
+			
+			$result=$this->db->delete('order_detail');
+			
+			return $result;
+		}
+
+		public function delete_order($orderNo){
+
+			$this->db->where('orderNo',$orderNo);
+			
+			$result=$this->db->delete('orders');
+			
+			return $result;
+		}
+
+		public function getOrderSum($orderNo){
+
+			//$this->db->where('orderNo',$orderNo);
+			
+			//$result=$this->db->get('order_detail');
+			
+			$result=$this->db->query("select * from orders, order_detail, delivery_method 
+				where orders.orderNo=order_detail.orderNo
+				AND orders.delivery_method_id=delivery_method.id
+				AND order_detail.orderNo='".$orderNo."'
+				");
+			return $result->result_array();
+
+			/*
+			 $data=$this->db
+    			->select_sum('od_product_price')
+    			->from('order_detail')
+    			->where('orderNo',$orderNo)
+    			->get();
+				return $data->result_array();*/
+		}
+
+		public function updateOrderDetail($data)
+		{
+			$od_id=$data['od_id'];
+			
+			$data=array(
+				"od_product_id"				=>$data['product_id'],
+				"od_product_quantity"		=>$data['quantity'],
+				"od_product_price"			=>$data['pro_cost']
+			);
+
+			$this->db->where('od_id',$od_id);
+
+			$result=$this->db->update('order_detail',$data);
+			
+			return $result;
+		}
+
+
+		public function deleteOrderDetail($od_id)
+		{
+			$this->db->where('od_id',$od_id);
+
+			$result=$this->db->delete('order_detail');
+			
+			return $result;
+		}
+
+		public function updateOrderTotal($orderNo, $total){
+
+			$this->db->set('o_total_amount', $total);
+
+			$this->db->where('orderNo',$orderNo);
+
+			$result=$this->db->update('orders');
 			
 			return $result;
 		}

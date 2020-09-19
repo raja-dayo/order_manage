@@ -71,7 +71,7 @@
 
 <script src="<?php echo base_url()."assets/js/dashboard/db-default.min.js"?>" type="text/javascript"></script>
 
-<script src="<?php echo base_url()."assets/ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js"?>" data-cf-settings="6c83b599e7d384d448a8bda2-|49" defer=""></script>
+<script src="<?php echo base_url()."assets/ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js"?>"  defer=""></script>
 </body>
 
 <!-- Mirrored from www.saerox-design.com/elisyam/db-default.html by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 12 Apr 2020 01:15:48 GMT -->

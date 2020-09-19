@@ -37,10 +37,12 @@
 
 		public function login_process()
 		{
+			
 			extract($_REQUEST);
 		
 			$data=$this->login->login_new($email);
-
+            
+          
 			if($data)
 			{
 				

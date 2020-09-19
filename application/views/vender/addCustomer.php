@@ -4,6 +4,13 @@
   require_once("include/header.php");
   
 ?>
+<style type="text/css">
+  .aaa {
+position: absolute;
+visibility:hidden;
+display:none;
+}
+</style>
 <script type="text/javascript">
   $(document).ready(function(){
    
@@ -70,18 +77,84 @@
       $("#p_code_msg").html("");
     });
 
-    $("form").submit(function(event){
+   /* $("#p_method").change(function(){
+      
+      var p_method= $("#p_method").val();
+      
+      if(p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zelle")
+      {
+        $("#agent").prop("disabled", false);
+      }
+    });
+
+    $("#p_method").change(function(){
+      
+      var p_method= $("#p_method").val();
+      
+      if(p_method=="bank" || p_method=="cradit card")
+      {
+        $("#agent").prop("disabled", true);
+        $("#agent").val("");
+      }
+    });
+
+    $("#p_method").change(function(){
+      
+      var p_method= $("#p_method").val();
+      
+      if(p_method=="cradit card")
+      {
+        $("#cardType").prop("disabled", false);
+        $("#c_number").prop("disabled", false);
+        $("#cvv_code").prop("disabled", false);
+        $("#ex_date").prop("disabled", false);
+      }
+    });
+
+    $("#p_method").change(function(){
+      
+      var p_method= $("#p_method").val();
+      
+      if(p_method=="bank" || p_method=="pay pal" || p_method=="cash app" || p_method=="vemo" || p_method=="zelle")
+      {
+        $("#cardType").prop("disabled", true);
+        $("#c_number").prop("disabled", true);
+        $("#cvv_code").prop("disabled", true);
+        $("#ex_date").prop("disabled", true);
+      }
+    });*/
+     $("form").submit(function(event){
       var fname               =$("#firstname").val()
       var lname               =$("#lastname").val()
-      var email               =$("#email").val()
+     // var email               =$("#email").val()
       var p_number            =$("#p_number").val()
       var country             =$("#country").val()
-      var state               =$("#select_state").val()
+      var state                = $("input[name=state_id]").val();
+     // var state               =$(".state").val()
       var postalcode          =$("#postalcode").val()
       var p_method            =$("#p_method").val()    
      
        
-      if($("#firstname").val()==="" || $("#lastname").val()==="" || $("#email").val()==="" || $("#p_number").val()===""|| $("#country").val()==="" || $("#select_state").val()==="" || $("#postalcode").val()==="" || $("#address").val()==="")
+      /*if(fname && lname && email && p_number && country && state && address && postalcode && p_method)
+      {
+        return true;
+      }
+      else
+      {
+        $("#fname_msg").html("Please enter first name");
+        $("#lname_msg").html("Please enter last name");
+        $("#email_msg").html("Please enter email");
+        $("#p_number_msg").html("Please enter phone number");
+        $("#country_msg").html("Please select country");
+        $("#state_msg").html("Please select state");
+        $("#address_msg").html("Please enter address");
+        $("#p_code_msg").html("Please enter postal code");
+        $("#p_method_msg").html("Please enter Payment Method");
+
+        return false;
+      }*/
+      
+      if($("#firstname").val()==="" || $("#lastname").val()==="" ||  $("#p_number").val()===""|| $("#country").val()==="" || $("input[name=state_id]").val();==="" || $("#postalcode").val()==="" || $("#address").val()==="")
       {
         if($("#firstname").val()==="")
         {
@@ -91,10 +164,10 @@
         {
           $("#lname_msg").html("Please enter your last name");  
         }    
-        if($("#email").val()==="")
+        /*if($("#email").val()==="")
         {
           $("#email_msg").html("Please enter your email");  
-        }
+        }*/
         if($("#p_number").val()==="")
         {
           $("#p_number_msg").html("Please enter your phone number");  
@@ -123,32 +196,12 @@
       }
     });
 
-   /* $("#opt-02").click(function()
-    {  
-      $("#cardType").prop("disabled", false);
-      $("#c_number").prop("disabled", false);
-      $("#cvv_code").prop("disabled", false);
-      $("#ex_date").prop("disabled", false);
-    });
-    $("#opt-01").click(function()
-    {  
-      $("#cardType").prop("disabled", true);
-      $("#c_number").prop("disabled", true);
-      $("#cvv_code").prop("disabled", true);
-      $("#ex_date").prop("disabled", true);
-    });
-    $("#opt-03").click(function()
-    {  
-      $("#cardType").prop("disabled", true);
-      $("#c_number").prop("disabled", true);
-      $("#cvv_code").prop("disabled", true);
-      $("#ex_date").prop("disabled", true);
-    });*/
+  
   });   
 </script>
 
 <div class="content-inner">
-	<div class="container-fluid">
+  <div class="container-fluid">
     <div class="row">
       <div class="page-header">
         <div class="d-flex align-items-center">
@@ -180,7 +233,7 @@
           </div>
           <div class="widget-body">
             <form class="form-horizontal" method="POST" action="<?php echo site_url("vender/addCustomer");?>">
-              <div class="form-group row d-flex align-items-center mb-5">
+              <div class="form-group row d-flex align-items-center mb-5" id="aaa">
                 <label class="col-lg-3 form-control-label">First Name</label>
                 <div class="col-lg-9">
                   <input type="text" class="form-control" name="firstName" id="firstname" placeholder="Enter Your First Name">
@@ -228,16 +281,27 @@
                 </div>
               </div>
 
-               <div class="form-group row mb-5">
+               <div class="form-group row mb-5" id="state_div">
                 <label class="col-lg-3 form-control-label">State</label>
                 <div class="col-lg-9 select mb-3">
-                  <select class="custom-select form-control" name="state_id" id="select_state">
+                  <select class="custom-select form-control state" name="state" id="select_state">
                     <option value="">Select Here</option>
                   </select>
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="state_msg" style="display: none;"></p>
                 </div>
               </div>
-             
+                
+
+              <div class="form-group row d-flex align-items-center mb-5" id="new_text_div">
+                <label class="col-lg-3 form-control-label">New State Text</label>
+                <div class="col-lg-9">
+                  <input type="text" class="form-control state" name="state_id" id="new_text" placeholder="Enter Your Last Name">
+                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="lname_msg" style="display: none;"></p>
+                </div>
+              </div>
+
+
+
                <div class="form-group row d-flex align-items-center mb-5">
                 <label class="col-lg-3 form-control-label">Address</label>
                 <div class="col-lg-9">
@@ -253,114 +317,6 @@
                   <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="p_code_msg" style="display: none;"></p>
                 </div>
               </div>
-
-              <div class="form-group row d-flex align-items-center mb-5">
-                <label class="col-lg-3 form-control-label">Customer Notes</label>
-                <div class="col-lg-9">
-                  <textarea class="form-control" name="customer_notes"></textarea>
-                </div>
-              </div>
-
-             <!-- <div class="form-group row mb-5">
-                <label class="col-lg-3 form-control-label">Payment Method</label>
-                <div class="col-lg-2">
-                  <div class="custom-control custom-radio styled-radio mb-3">
-                    <input class="custom-control-input" type="radio" name="options" id="opt-01"  value="bank">
-                    <label class="custom-control-descfeedback" for="opt-01">Bank</label>
-                    <div class="invalid-feedback">
-                      Toggle this custom radio
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-2">
-                  <div class="custom-control custom-radio styled-radio mb-3">
-                    <input class="custom-control-input" type="radio" name="options" id="opt-02"   value="credit card">
-                    <label class="custom-control-descfeedback" for="opt-02">Credit Card</label>
-                    <div class="invalid-feedback">
-                      Or toggle this other custom radio
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-2">
-                  <div class="custom-control custom-radio styled-radio mb-3">
-                    <input class="custom-control-input" type="radio" name="options" id="opt-03"  value="paypal">
-                    <label class="custom-control-descfeedback" for="opt-03">Paypal</label>
-                    <div class="invalid-feedback">
-                      Or toggle this other custom radio
-                    </div>
-                  </div>
-                </div>
-              </div>-->
-
-               <!--<div class="form-group row mb-5">
-                <label class="col-lg-3 form-control-label">Payment Method</label>
-                <div class="col-lg-9 select mb-3">
-                  <select class="custom-select form-control" name="p_method" id="p_method">
-                    <option>Select Here</option>
-                    <option value="bank">Bank</option>
-                    <option value="cradit card">Cradit Card</option>
-                    <option value="pay pal">Pay Pal</option>
-                    <option value="cash app">Cash App</option>
-                    <option value="vemo">Vemo</option>
-                    <option value="zelle">Zelle</option>
-                  </select>
-                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="p_method_msg" style="display: none;"></p>
-                </div>
-              </div>
-
-              <div class="form-group row mb-5">
-                <label class="col-lg-3 form-control-label">Agent</label>
-                <div class="col-lg-9 select mb-3">
-                  <select class="custom-select form-control" name="agent" id="agent" disabled="true">
-                    <option value="Select Here">Select Here</option>
-                    <option value="bank">a</option>
-                    <option value="cradit card">b</option>
-                    <option value="pay pal">c</option>
-                    <option value="cash app">c</option>
-                    <option value="vemo">e</option>
-                    <option value="zelle">f</option>
-                  </select>
-                  <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="agent_msg" style="display: none;"></p>
-                </div>
-              </div>
-              <div class="widget-header bordered no-actions d-flex align-items-center">
-                <h4>Card And Details</h4>
-              </div>
-              <div class="widget-body" id="cards">
-                 <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Card Type</label>
-                  <div class="col-lg-9">
-                    <select class="custom-select form-control" name="cardType" id="cardType" disabled="true">
-                      <option>Select Here</option>
-                      <option value="1">Visa</option>
-                      <option value="2">Master Card</option>
-                       <option value="3">Discover</option>
-
-                    </select>
-                  </div>
-                </div>
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Card Number</label>
-                  <div class="col-lg-9">
-                    <input type="text" class="form-control" name="cardNumber" id="c_number" placeholder="Enter Your Card Number" disabled="true">
-                    <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="c_num_msg" style="display: none;"></p>
-                  </div>
-                </div>
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">CVV Code</label>
-                  <div class="col-lg-9">
-                    <input type="text" class="form-control" name="cvvCode" id="cvv_code" placeholder="Enter Your CVV Code" disabled="true">
-                    <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="cvv_code_msg" style="display: none;"></p>
-                  </div>
-                </div>
-                <div class="form-group row d-flex align-items-center mb-5">
-                  <label class="col-lg-3 form-control-label">Expiry Date</label>
-                  <div class="col-lg-9">
-                    <input type="text" class="form-control" name="expiryDate" id="ex_date" placeholder="Enter expiry Date like mm/dd" disabled="true">
-                     <p style="margin-left: 3px; margin-top: 3px; color:red; font-size:12px;" id="date_msg" style="display: none;"></p>
-                  </div>
-                </div>
-              </div>-->
              
                 <div class="text-center">
                   <button type="submit" class="btn btn-primary ripple mr-1 mb-2">Add</button>
@@ -380,6 +336,7 @@
   
   $(document).ready(function()
   {
+    $("#new_text_div").addClass("aaa");
     $("#email").blur(function(){
 
       var email = $("#email").val();
@@ -388,13 +345,14 @@
       {
         if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
         {
+          
           if(responseText!="")
           {
             $("#email_msg").html(responseText);
             
             $("#email_msg").css({"color":"red"});
 
-            $("#email").focus();
+            //$("#email").focus();
 
             $("#email").val("");
           }
@@ -416,27 +374,50 @@
     $("#country").change(function(){
 
       var country_id = $("#country").val();
-      
-      function ajax_success(responseText, statusText, XMLHttpRequest)
+          //alert(country_id);
+      if(country_id==2)
       {
-        if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
+        //$("#state_div").css("display","block");
+        // 
+        $("#state_div").show();
+        $("#new_text_div").addClass("aaa");
+
+        function ajax_success(responseText, statusText, XMLHttpRequest)
         {
-          if(responseText)
+          if(statusText == "success" && XMLHttpRequest.status == 200 && XMLHttpRequest.statusText == "OK")
           {
-            $("#select_state").html(responseText);
+            if(responseText)
+            {
+              $("#select_state").html(responseText);
+            }
           }
         }
-      }
 
-      $.ajax({
-        url: "<?php echo site_url("vender/getStates"); ?>",
-        type: "POST",
-        data: {country_id:country_id},
-        success: ajax_success,
-      });  
+        $.ajax({
+          url: "<?php echo site_url("vender/getStates"); ?>",
+          type: "POST",
+          data: {country_id:country_id},
+          success: function(response){
+              var data = $.parseJSON(response);
+              
+              $.each(data, function (index, value) {
+                $('#select_state').append($('<option/>', { 
+                  value: value.text,
+                  text : value.text 
+                }));
+              });    
+          },
+        });
+      }
+      else{
+        //alert("kjl");//$("p").hide();
+        $("#state_div").hide();
+        
+         $("#new_text_div").removeClass("aaa");
+      }
     });
 
-    $("#c_number").keyup(function(){
+    /*$("#c_number").keyup(function(){
 
       var c_number = $("#c_number").val();  
 
@@ -452,9 +433,9 @@
       {
         $("#c_num_msg").html("");
       }
-    });
+    });*/
 
-    $("#cvv_code").keyup(function(){
+    /*$("#cvv_code").keyup(function(){
 
       var cvv_code = $("#cvv_code").val();  
 
@@ -470,9 +451,9 @@
       {
         $("#cvv_code_msg").html("");
       }
-    });
+    });*/
 
-    $("#ex_date").keyup(function(){
+    /*$("#ex_date").keyup(function(){
       
       var ex_date = $("#ex_date").val();
 
@@ -493,6 +474,6 @@
       {
         $("#date_msg").html("Please enter valid formate date 02/25");
       }
-    });
+    });*/
   });
 </script>

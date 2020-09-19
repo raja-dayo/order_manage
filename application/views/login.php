@@ -54,7 +54,7 @@
 				<div class="authentication-form mx-auto">
 					<div class="logo-centered">
 						
-						<img src="<?php echo base_url()."assets/img/logo.png"?>" alt="logo">
+						<img src="<?php echo base_url()."assets/img/OMS.png"?>" alt="logo">
 					</div>
 					
 					<h3>Sign In To OMS</h3>

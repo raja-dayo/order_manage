@@ -10,8 +10,8 @@
 <meta name="description" content="Elisyam is a Web App and Admin Dashboard Template built with Bootstrap 4">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<script src="http://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="6c83b599e7d384d448a8bda2-text/javascript"></script>
-<script type="6c83b599e7d384d448a8bda2-text/javascript">
+<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+<script type="text/javascript">
           WebFont.load({
             google: {"families":["Montserrat:400,500,600,700","Noto+Sans:400,700"]},
             active: function() {
@@ -137,6 +137,8 @@
           </ul>
           </li>
           <li><a href="<?php echo site_url("admin/customer");?>"><i class="la la la-users"></i><span>Customers</span></a>
+          </li>
+          <li><a href="<?php echo site_url("admin/shipping");?>"><i class="la la la-users"></i><span>Shipping</span></a>
           </li>
         </ul>
       </nav>

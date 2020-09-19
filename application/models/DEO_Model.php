@@ -15,6 +15,13 @@
 			return $result->result_array();
 		}
 		
+		public function getCountry()
+		{
+			$result=$this->db->query("select * from country");
+			
+			return $result->result_array();
+		}
+		
 		public function updateAdminProfileModel($id, $fname, $lname, $pass, $number, $image, $add)
 		{
 			$data=array(
@@ -35,21 +42,22 @@
 			return $flag;
 		}
 
-		public function addproductModel($category_id, $product, $image, $description, $prize)
+		public function addproductModel($category_id, $product, $image, $description)
 		{
 			$data=array(
 				'category_id'			=>$category_id,
 				'product'				=>$product,
 				'image'					=>$image,
 				'description'			=>$description,
-				'prize'					=>$prize,
 				'created_on'			=>time(),
+				'status'                =>1,
 			);
 
 			$result=$this->db->insert("products", $data);
 			
 			return $result;
 		}
+
 
 		public function productsModel()
 		{
@@ -145,11 +153,11 @@
 		public function stockProductsModel()
 		{
 			$result=$this->db->query("SELECT products.id, products.product
-			FROM products
-			WHERE NOT EXISTS (
-				SELECT  * FROM stock
-				WHERE stock.s_product_id = products.id
-			)");
+            FROM products
+            WHERE products.status=1 AND NOT EXISTS (
+            SELECT  * FROM stock
+            WHERE stock.s_product_id = products.id
+            )");
 
 			return $result->result_array();
 		}
@@ -195,9 +203,15 @@
 			
 			return $result;
 		}
-			public function orderList()
+		public function order_list()
 		{
-			$result=$this->db->query("select * from users, orders, customers, products where orders.vender_id=users.id AND orders.customer_id=customers.customer_id AND orders.product_id=products.id  AND orders.deleted='no' order By order_id DESC");
+			$result=$this->db->query("SELECT * FROM users, orders, order_detail, customers, delivery_method 
+				WHERE orders.customer_id=customers.customer_id
+				AND orders.orderNo=order_detail.orderNo
+				AND orders.vender_id=users.id
+				AND orders.delivery_method_id=delivery_method.id order By order_id DESC"
+			);
+			
 			
 			return $result->result_array();
 		}
@@ -205,13 +219,12 @@
 		{
 			//$result=$this->db->query("select * from users,orders,customers,products,country,states,agents where orders.vender_id=users.id AND orders.customer_id=customers.customer_id AND orders.product_id=products.id AND customers.country_id=country.country_id AND customers.state_id=states.state_id AND orders.order_id='".$id."'");
 
-			$result=$this->db->query("SELECT *  FROM users, customers, products, country, states,orders
+			$result=$this->db->query("SELECT *  FROM users, customers, products, country, orders
 				LEFT JOIN agents ON orders.agent = agents.a_id
 				WHERE orders.vender_id=users.id
 				AND orders.customer_id=customers.customer_id 
 				AND orders.product_id=products.id 
-				AND orders.o_country_id=country.country_id 
-				AND orders.o_state_id=states.state_id  
+				AND customers.country_id=country.country_id  
 				AND orders.order_id='".$id."'"
 			);
 			
@@ -304,7 +317,7 @@
 			return $result->result_array();
 		}
 
-		public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date,$country_id, $state_id, $address,$p_code)
+		/*public function addOrder($orderNo, $customer_id, $product_id, $quantity, $product_sell, $payment_method, $agent, $agent_percentage, $card_type, $card_number, $cvv_number, $card_ex_date,$order_date)
 		{
 			$data=array(
 
@@ -313,11 +326,12 @@
 				"customer_id"			=> $customer_id,
 				"product_id"			=> $product_id,
 				"order_quantity"		=> $quantity,
+				"order_date"			=>	$order_date,
+			//	"o_country_id"			=> $country_id,
+			//	"o_state_id"			=> $state_id,
+			//	"o_street_address"		=> $address,
+			//	"o_postal_code"			=> $p_code,
 				//"amount"				=> $amount,
-				"o_country_id"			=> $country_id,
-				"o_state_id"			=> $state_id,
-				"o_street_address"		=> $address,
-				"o_postal_code"			=> $p_code,
 				//"ship_date"				=> $shipDate,
 				//"state_id"				=> $state,
 				//"postal_code"			=> $postalCode,
@@ -336,6 +350,30 @@
 			$result=$this->db->insert("orders", $data);	
 			
 			return $result;
+		}*/
+
+		public function orderEditModel($orderNo)
+		{
+			$result=$this->db->query("select * from orders, customers, products where orders.customer_id=customers.customer_id AND orders.product_id=products.id AND orderNo='".$orderNo."'");
+			
+			return $result->result_array();
+		}
+		
+		public function orderUpdateModel($orderId, $customer_id, $product_id, $orderNo, $sell_pro, $quantity)
+		{
+			$data=array(
+				'customer_id'			=> $customer_id,
+				'product_id'			=> $product_id,
+				'orderNo'				=> $orderNo,
+				'order_quantity'		=> $quantity,
+				'sell_product_cost'		=> $sell_pro,
+			);
+
+			$this->db->where('order_id', $orderId);
+
+			$result=$this->db->update('orders', $data);
+
+			return $result;
 		}
 		public function productCostModel($product_id)
 		{
@@ -344,19 +382,18 @@
 			return $result->result_array();
 		}
 
-		public function addCustomerModel($fname, $lname, $email, $phone_no, $country_id, $state_id, $address, $postal_code, $customer_notes)
+		public function addCustomerModel($data)
 		{
 			$data=array(
 
-				"firstName"			=> $fname,
-				"lastName"			=> $lname,
-				"email"				=> $email,
-				"number"			=> $phone_no,
-				"country_id"		=> $country_id,
-				"state_id"			=> $state_id,
-				"address"			=> $address,
-				"postalCode"		=> $postal_code,
-				"customer_notes"	=> $customer_notes,
+				"firstName"			=> $data['firstName'],		
+				"lastName"			=> $data['lastName'],		
+				"email"				=> $data['email'],			
+				"number"			=> $data['phoneNumber'], 	
+				"country_id"		=> $data['country_id'],		
+				"state_id"			=> $data['state_id'], 		
+				"address"			=> $data['address'], 		
+				"postalCode"		=> $data['postalCode'],
 				"added_by"			=> $_SESSION['data']['deo']['id'],
 				"added_on"			=> time()
 			);
@@ -369,6 +406,21 @@
 			
 			return $result_1->result_array();
 		}
+
+		public function getCustomerModel()
+		{
+			$records=$this->db->query("select * from customers");
+			
+			return $records->result_array();
+		}
+		
+		public function editCustomerModel($id)
+		{
+			$records=$this->db->query("select * from customers where customer_id='".$id."'");
+			
+			return $records->result_array();
+		}
+
 		public function searchModel($pattern)
 		{
 			$this->db->like('email', $pattern, 'after');
@@ -393,7 +445,7 @@
 
 		public function getStateModel($id)
 		{
-			$result=$this->db->query("SELECT * FROM States Where country_id='".$id."'");
+			$result=$this->db->query("SELECT state_name as text, state_id as value FROM states Where country_id='".$id."'");
 			
 			return $result->result_array();
 		}

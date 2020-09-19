@@ -9,6 +9,8 @@
 
 			$this->load->model("DEO_Model", "DEO");
 
+			$this->load->model("Admin_Vender_Model", "AdminVender");
+
 			$this->load->helper("form");
 
 			//$this->load->library("encryption");
@@ -43,6 +45,8 @@
 
 			$result['countries']=$this->DEO->getCountriesModel();
 
+			$result['d_method']=$this->AdminVender->getDeliveryMethod();
+
 			$this->load->view("deo/new_order",$result);
 		}
 
@@ -55,40 +59,175 @@
 				$_REQUEST['cvvCode']	="NULL";
 				$_REQUEST['expiryDate'] ="NULL";		
 			}
-
 			if(!isset($_REQUEST['agent']))
 			{
 				$_REQUEST['agent'] ="NULL";
 				$_REQUEST['pm_percentage'] ="NULL";
 			}
-			//echo "<pre>";
-			//print_r($_REQUEST);
+			
 			extract($_REQUEST);
-		
+
+			$rst=$this->AdminVender->getSingleDeliveryMethod($d_method);
+			/*if($d_method==1){
+
+				$d_charges=15;
+			}else if($d_method==2){
+				$d_charges=22.5;
+			}else{
+				$d_charges=38;
+			}*/
+			//die;
 			if($hidden_customer_id=="")
 				
 			{
-				$customer_id = rawurldecode($this->encrypt->decode($customer_id));
+				$_REQUEST['customer_id'] = rawurldecode($this->encrypt->decode($customer_id));
+				$_REQUEST['vender_id'] =$_SESSION['data']['deo']['id'];
 		
-				$result=$this->DEO->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
+				foreach ($_SESSION['product'] as $key => $product) {
+					
+					$result=$this->AdminVender->addOrderDetail($orderNo, $product['pro'], $product['qun'], $product['cost']);
+				
+				    $amount[]=$product['qun']*$product['cost'];
+				}
+					
+				$_REQUEST['amount']=array_sum($amount)+$rst[0]['d_shipping_charges'];
+				
+				$result=$this->AdminVender->addOrder($_REQUEST);
+
 				if($result)
 				{
-					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
+					unset($_SESSION['product']);
+					$this->session->set_flashdata('msg', "Order No $orderNo Has Added Successfully");
 						
 					return redirect("deo/newOrder");
 				}
 			}
 			else
 			{
-				$customer_id = $hidden_customer_id;
+				$_REQUEST['customer_id'] = $hidden_customer_id;
+				
+				$_REQUEST['vender_id'] =$_SESSION['data']['deo']['id'];
+				
+				foreach ($_SESSION['product'] as $key => $product) {
+					
+					$result=$this->AdminVender->addOrderDetail($orderNo, $product['pro'], $product['qun'], $product['cost']);
 
-				$result=$this->DEO->addOrder($orderNo, $customer_id, $product_id, $quantity, $sell_pro, $p_method, $agent, $pm_percentage, $cardType, $cardNumber, $cvvCode, $expiryDate, $country_id, $state_id, $address, $p_code);
+					$amount[]=$product['qun']*$product['cost'];
+				}
+
+				$_REQUEST['amount']=array_sum($amount)+$rst[0]['d_shipping_charges'];
+
+				$result=$this->AdminVender->addOrder($_REQUEST);
+
 				if($result)
 				{
-					$this->session->set_flashdata('msg', 'Order Has Added Successfully');
+					unset($_SESSION['product']);
+					$this->session->set_flashdata('msg', "Order Has $orderNo Added Successfully");
 						
 					return redirect("deo/newOrder");
 				}
+			}
+		}
+		
+		public function add_more(){
+
+			$cost = $_POST['data']['cost'];
+			$abc=$this->AdminVender->get_product_name($_POST['data']['pro']);
+			
+			$_POST['data']['product']=$abc[0]['product'];
+			$_POST['data']['total']=$_POST['data']['qun']*$cost;
+
+
+			$_SESSION['product'][]=$_POST['data'];
+			echo json_encode($_POST);
+		}
+
+		public function delete_pro(){
+
+			//echo "<pre>";
+			//print_r($_SESSION['product']);
+			foreach ($_SESSION['product'] as $key => $product) {
+				if($product['pro']==$_POST['id']){
+					unset($_SESSION['product'][$key]);
+				}
+			}
+			//echo "<pre>";
+			//print_r($_SESSION['product']);
+			echo json_encode($_SESSION['product']);
+		}
+
+		public function add_another_product_page(){
+
+			$result['products']=$this->DEO->productsModel();
+
+			$this->load->view('deo/multiple_product_page',$result);
+		}
+
+		public function add_multiple_product(){
+
+			$this->AdminVender->addOrderDetail($_REQUEST['orderNo'], $_REQUEST['product_id'], $_REQUEST['quantity'], $_REQUEST['sell_pro']);
+			
+			return redirect('deo/orders');
+		}
+
+		public function updateOrderForm()
+		{
+			//$data['order'] $_REQUEST['orderId'];
+			//echo "jkghkdfj";
+			//die;
+			$data['result']		=$this->DEO->orderEditModel($_REQUEST['orderId']);
+			$data['products']	=$this->AdminVender->productsModel();
+				
+				//echo "<pre>";
+
+				//print_r($data);
+				//die;
+			$this->load->view("deo/updateOrderForm",$data);
+		}
+		public function orderUpdate()
+		{
+			//echo "<pre>";
+			//print_r($_REQUEST);
+			if(isset($_REQUEST['cancel']))
+			{
+				return redirect("deo/orders");
+			}
+			else
+			{
+				//echo "<pre>";
+				//print_r($_REQUEST);
+				//die;
+				extract($_REQUEST);
+				$flag=$this->DEO->orderUpdateModel($order_id, $customer_id, $product_id, $orderNo, $sell_pro, $quantity);
+				
+				if($flag)
+				{
+					$this->session->set_flashdata('msg', " $orderNo Order Has Updated");
+					
+					return redirect("deo/orders");
+					//echo "yes";
+				}
+				else
+				{
+					echo "no";
+				}
+			}
+		}
+		public function deleteOrder()
+		{
+			
+			echo "delete";
+			die;
+			$flag=$this->Vender->deleteOrderModel($_REQUEST['orderId']);
+		
+
+			if($flag)
+			{
+				return redirect("vender/order");
+			}
+			else
+			{
+				echo "not ok";
 			}
 		}
 
@@ -197,7 +336,7 @@
 			
 			$this->form_validation->set_rules('productName', 'Product', 'required');
 
-			$this->form_validation->set_rules('prize', 'Prize', 'required');
+			//$this->form_validation->set_rules('prize', 'Prize', 'required');
 
 			//$this->form_validation->set_rules('image', 'Document', 'required');
 			if (empty($_FILES['image']['name']))
@@ -226,7 +365,7 @@
 
 		            $file_name= $data['upload_data']['file_name'];
 
-		        	$flag=$this->DEO->addproductModel($category_id, $productName, $file_name, $productDescription, $prize);
+		        	$flag=$this->DEO->addproductModel($category_id, $productName, $file_name, $productDescription);
 		        	if($flag)
 					{
 						$this->session->set_flashdata("msg", "Product Hase Been Added");
@@ -416,50 +555,44 @@
 		}
 		public function orders()
 		{
-			$records=$this->DEO->orderList();
-			
-			$data['records']=$records;
+			$data['records']=$this->AdminVender->order_list();
 
 			$this->load->view("deo/orderList", $data);
 		}
-			public function order_view()
-		{
-			//echo $_POST['order_id'];
+		public function order_view()
+		{	
+			$data['orders']=$this->AdminVender->orderViewModel($_REQUEST['order_id']);
 			
-			$data['order']=$this->DEO->orderViewModel($_POST['order_id']);
-			
-			//echo "<pre>";
-			//print_r($data);
-
 			$this->load->view("deo/orderView",$data);
 		}
-		public function orderTracking()
+		
+		public function updateOrderTracking()
 		{
-			//echo "<pre>";
-			//print_r($_REQUEST);
-			//o_quantity
-			//die;
-			//echo $_POST['orderId'];
-			if($_REQUEST['status']==3 || $_REQUEST['status']==4)
+			if($_REQUEST['status']==2)
 			{
-				$this->DEO->insert_order_history_model($_POST['orderId'],$_POST['tracking'],$_POST['amount'],$_POST['[status']);
+				$result=$this->AdminVender->update_order($_REQUEST);			
+
+				return redirect("deo/orders");
 			}
-
-			
-			$result['pro']=$this->DEO->product_stock_qunatity($_POST['orderId']);
-			
-			$previous_quantity= $result['pro'][0]['s_product_qunatity'];
-			
-			$current_quantity=$previous_quantity-$_POST['o_quantity'];
-			
-			$stock_id         =$result['pro'][0]['s_id'];
-
-			$result=$this->DEO->order_tracking($_POST['orderId'], $_POST['status'], $_POST['tracking']);
-
-			$this->DEO->update_stock_product_model($stock_id, $current_quantity);
-			//die;
-			if($result)
+			else if($_REQUEST['status']==3)
 			{
+				for ($i=0; $i<count($_REQUEST['o_quantity']) ; $i++) { 
+
+					$result=$this->AdminVender->update_stock_qunatity($_REQUEST['o_quantity'][$i],$_REQUEST['order_product'][$i]);
+				}	
+				
+				$_REQUEST['amount']=array_sum($_REQUEST['amount']);
+				
+				$result=$this->AdminVender->insert_order_history_model($_REQUEST);
+
+				$result=$this->AdminVender->update_order($_REQUEST);
+				
+				return redirect("deo/orders");
+			}			
+			else
+			{
+				$result=$this->AdminVender->update_order($_REQUEST);			
+
 				return redirect("deo/orders");
 			}
 		}
@@ -499,7 +632,8 @@
 			if(!empty($pattern))
 			{
 				
-				$records=$this->DEO->searchModel($pattern);
+				$records=$this->AdminVender->searchModel($pattern);
+				//$records=$this->DEO->searchModel($pattern);
 				
 				if(!empty($records))
 				{
@@ -507,11 +641,11 @@
 						<ul>
 							<?php
 								foreach ($records as $key => $emails) {
-									$name=$emails['firstName']." ".$emails['lastName'];
+									$name=$emails['firstName']; //." ".$emails['lastName'];
 
 									$encryptId=urldecode($this->encrypt->encode($emails['customer_id']));
 									?>
-										<li style="padding: 3px;"><a href="<?php echo site_url("deo/newOrder?customer_name=$name&customer_id=$encryptId"); ?>"><?php echo $emails['email']?></a></li>
+										<li style="padding: 3px;"><a href="<?php echo site_url("deo/newOrder?customer_name=$name&customer_id=$encryptId"); ?>"><?php echo $name;?></a></li>
 									<?php
 								}
 							?>
@@ -532,7 +666,7 @@
 
 			$result=$this->DEO->productCostModel($_POST['product_id']);
 			
-			echo $result[0]['prize'];
+		    echo json_encode($result);
 		}
 
 		public function customerForm()
@@ -555,28 +689,20 @@
 		public function getStates()
 		{
 			$records=$this->DEO->getStateModel($_REQUEST['country_id']);
-			
-			$data['records']= $records;
-			
-			$this->load->view("deo/ajaxStates", $data);
+
+			echo json_encode($records);
 		}
 
 		public function add_Customer()
 		{
-			//echo "<pre>";
-			//print_r($_REQUEST);
-
-			extract($_REQUEST);
-
-			
-			$record=$this->DEO->addCustomerModel($firstName, $lastName, $email, 
-			$phoneNumber, $country_id ,$state_id, $address ,$postalCode, $customer_notes);
-			
+			$record=$this->DEO->addCustomerModel($_REQUEST);
 			
 			$abc= $record[0]['firstName']." ".$record[0]['lastName'];
+			
 			$xyz=$record[0]['customer_id'];
 
 			$this->session->set_flashdata('alpha', $abc);
+			
 			$this->session->set_flashdata('bita', $xyz);
 
 			if($record)
@@ -587,6 +713,48 @@
 			{
 				echo "No";
 			}
+		}
+
+		public function customerList(){
+
+			$data["records"]=$this->DEO->getCustomerModel();
+
+			$this->load->view("deo/customerList", $data);
+		}
+
+		public function updateCustomerForm(){
+
+			$customerId= rawurldecode($this->encrypt->decode($_REQUEST['customerId']));
+
+			$data['result']=$this->DEO->editCustomerModel($customerId);
+			
+			$data['countries']=$this->DEO->getCountry();
+			
+			$this->load->view("deo/updateForm",$data);
+		}
+		public function updateCustomer()
+		{
+			$_REQUEST['c_id']= rawurldecode($this->encrypt->decode($_REQUEST['customer_id']));
+
+			$flag=$this->AdminVender->updateCustomerModel($_REQUEST,$_REQUEST['c_id']);
+			
+			if($flag)
+			{
+				$this->session->set_flashdata('msg', 'Customer Has Updated Successfully');
+				
+				return redirect("deo/customerList");
+			}
+			else
+			{
+				echo "No";
+			}	
+		}
+
+		public function deleteCustomer()
+		{
+			$_REQUEST['customerId'];
+			
+			return redirect("deo/customerList");
 		}
 
 		public function profile()
